@@ -1,0 +1,25 @@
+---
+- name: upgrade software packages to latest version
+  apt: 
+    update_cache: yes
+    cache_valid_time: 600
+    upgrade: dist 
+
+- name: autoremove unneeded packages
+  command: apt-get -y autoremove
+  register: autoremove_result
+  changed_when: "autoremove_result.stdout.startswith('Selecting')"
+
+- name: register running kernel version
+  command: uname -r
+  register: running_kernel
+  changed_when: false
+
+- name: register installed kernel version
+  shell: dpkg -l | grep "linux-image-[0-9]" | sort | tail -1 | perl -ane 'print substr($F[1], 12), "\n"'
+  register: installed_kernel
+  changed_when: false
+
+- name: reboot if kernel version has changed
+  include: reboot.yml
+  when: installed_kernel.stdout != running_kernel.stdout

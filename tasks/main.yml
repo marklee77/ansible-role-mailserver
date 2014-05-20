@@ -1,2 +1,4 @@
 ---
-# tasks file for ansible-galaxy-postfix
+- include: upgrade.yml
+- include: mysql.yml
+- include: postfix.yml

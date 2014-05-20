@@ -1,0 +1,80 @@
+---
+
+- name: ensure dependencies available through apt are installed
+  apt: 
+    pkg: "{{ item }}" 
+    state: latest 
+    update_cache: yes 
+    cache_valid_time: 600
+  with_items:
+    - postfix
+    - dovecot
+    - amavisd-new
+    - bld-postfix
+    - bley
+    - dkim-milter-python
+    - postfix-cluebringer
+    - postfix-gld
+    - postfix-ldap
+    - postfix-mysql
+    - postgrey
+    - spamassassin
+    - spamass-milter
+    - spfquery
+    - sqlgrey
+    - bogofilter
+    - bsfilter
+    - clamassassin
+    - cron-deja-vu
+    - dspam
+
+#- name: ensure gitlabhq_production database is present
+#  mysql_db: 
+#    name: gitlabhq_production
+
+#- name: ensure git database user is present
+#  mysql_user: 
+#    name: git
+#    host: "{{ item }}" 
+#    password: "{{ gitlab_git_mysql_password }}" 
+#    priv: gitlabhq_production.*:ALL
+#  with_items:
+#    - "%"
+#    - localhost
+
+- name: update mailname from template
+  template:
+    src: etc/mailname
+    dest: /etc/mailname
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart postfix
+    - restart amavisd
+
+- name: update main.cf from template
+  template:
+    src: etc/postfix/main.cf
+    dest: /etc/postfix/main.cf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart postfix
+
+- name: update master.cf from template
+  template:
+    src: etc/postfix/master.cf
+    dest: /etc/postfix/master.cf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart postfix
+
+- name: ensure postfix is started and enabled
+  service:
+    name: postfix
+    state: started
+    enabled: yes

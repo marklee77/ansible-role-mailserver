@@ -1,2 +1,2 @@
 ---
-# defaults file for ansible-galaxy-postfix
+postfix_mailname: vagrant-ubuntu-trusty-64
