@@ -8,6 +8,14 @@
     cache_valid_time: 600
   with_items:
     - postfix
+    - postfix-policyd-spf-python
+    - opendkim
+    - opendkim-tools
+
+    - clamav-daemon
+    - clamav-freshclam
+    
+
     - dovecot
     - amavisd-new
     - bld-postfix
