@@ -1,5 +1,5 @@
 ---
-postfix_mailname: mail
+postfix_mailname: mail.localdomain
 postfix_server_fqdn: mail.localdomain
 postfix_domain: localdomain
 postfix_proxy_interfaces:
@@ -9,4 +9,13 @@ postfix_subdomain_list:
   - www
   - ftp
   - mail
+postfix_rbl_list:
+  - zen.spamhaus.org,
+  - bl.spamcop.net,
+  - cbl.abuseat.org,
+  - truncate.gbudb.net
+  - dnsbl.sorbs.net
+postfix_rhsbl_list:
+  - rhsbl.sorbs.net
+
 

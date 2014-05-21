@@ -1,3 +1,5 @@
+# NOTIFICATIONS
+
 biff = no
 
 # INTERNET HOST AND DOMAIN NAMES
@@ -30,12 +32,20 @@ relay_domains = $mydestination
 smtpd_use_tls = yes
 smtpd_tls_cert_file = {{ postfix_ssl_cert_file }}
 smtpd_tls_key_file = {{ postfix_ssl_key_file }}
+smtpd_tls_protocols = !SSLv2, !SSLv3
+smtpd_tls_security_level=may
 smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
 smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 
-# INPUT RATE CONTROL
+# AUTHENTICATION
 
-in_flow_delay = 1s
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth-client
+smtpd_sasl_local_domain =
+smtpd_sasl_security_options = noanonymous
+
+broken_sasl_auth_clients = yes
 
 # ADDRESS EXTENSIONS (e.g., user+foo)
 
@@ -46,22 +56,13 @@ recipient_delimiter = +
 home_mailbox = Maildir/
 #mailbox_command = /usr/bin/procmail
 
-# Cyrus IMAP over LMTP. Specify ``lmtpunix      cmd="lmtpd"
-# listen="/var/imap/socket/lmtp" prefork=0'' in cyrus.conf.
-#mailbox_transport = lmtp:unix:/var/imap/socket/lmtp
-#
-# Cyrus IMAP via command line. Uncomment the "cyrus...pipe" and
-# subsequent line in master.cf.
-#mailbox_transport = cyrus
-
 # JUNK MAIL CONTROLS
 
-unknown_address_reject_code = 554
-unknown_hostname_reject_code = 554
-unknown_client_reject_code = 554
-disable_vrfy_command = yes
-
 smtpd_banner = $myhostname ESMTP $mail_name 
+
+in_flow_delay = 10s
+
+disable_vrfy_command = yes
 
 smtpd_helo_required = yes
 strict_rfc821_envelopes = yes
@@ -70,11 +71,13 @@ header_checks = regexp:/etc/postfix/header_checks
 smtpd_client_restrictions = 
     permit_sasl_authenticated,
     reject_unauth_destination, 
-    reject_rbl_client zen.spamhaus.org,
-    reject_rbl_client bl.spamcop.net,
-    reject_rbl_client cbl.abuseat.org,
-    reject_rbl_client truncate.gbudb.net
-    reject_rbl_client dnsbl.sorbs.net
+    {% for rbl in postfix_rbl_list %}
+        reject_rbl_client {{ rbl }},
+    {% endfor %}
+    {% for rhsbl in postfix_rhsbl_list %}
+        reject_rhsbl_client {{ rhsbl }},
+    {% endfor %}
+    permit
 
 smtpd_helo_restrictions = 
     reject_invalid_hostname, reject_non_fqdn_hostname
@@ -82,7 +85,10 @@ smtpd_helo_restrictions =
 smtpd_sender_restrictions = 
     reject_non_fqdn_sender, 
     reject_unknown_sender_domain,
-    reject_rhsbl_sender XXX
+    {% for rhsbl in postfix_rhsbl_list %}
+        reject_rhsbl_sender {{ rhsbl }},
+    {% endfor %}
+    permit
 
 policy-spf_time_limit = 3600s
 
@@ -103,3 +109,7 @@ smtpd_milters = inet:localhost:8891, inet:localhost:8892
 non_smtpd_milters = inet:localhost:8891, inet:localhost:8892
 
 content_filter = smtp-amavis:[localhost]:10024
+
+unknown_address_reject_code = 554
+unknown_hostname_reject_code = 554
+unknown_client_reject_code = 554

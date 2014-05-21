@@ -1,0 +1,13 @@
+mailer-daemon: postmaster
+postmaster: root
+nobody: root
+hostmaster: root
+usenet: root
+news: root
+webmaster: root
+www: root
+ftp: root
+abuse: root
+{% if postfix_root_alias_dest %}
+root: {{ postfix_root_alias_dest }}
+{% endif %}

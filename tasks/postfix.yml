@@ -1,5 +1,4 @@
 ---
-
 - name: ensure dependencies available through apt are installed
   apt: 
     pkg: "{{ item }}" 
@@ -7,34 +6,27 @@
     update_cache: yes 
     cache_valid_time: 600
   with_items:
-    - postfix
-    - postfix-policyd-spf-python
-    - opendkim
-    - opendkim-tools
-
+    - amavisd-new
     - clamav-daemon
     - clamav-freshclam
-    
-
-    - dovecot
-    - amavisd-new
-    - bld-postfix
-    - bley
-    - dkim-milter-python
-    - postfix-cluebringer
-    - postfix-gld
-    - postfix-ldap
-    - postfix-mysql
-    - postgrey
-    - spamassassin
-    - spamass-milter
-    - spfquery
-    - sqlgrey
-    - bogofilter
-    - bsfilter
-    - clamassassin
     - cron-deja-vu
+    - dovecot-antispam
+    - dovecot-core
+    - dovecot-imapd
+    - dovecot-managesieved
+    - dovecot-metadata-plugin
+    - dovecot-pop3d
+    - dovecot-sieve
+    - dovecot-solr
     - dspam
+    - fuzzyocr
+    - opendkim
+    - opendkim-tools
+    - postfix
+    - postfix-gld 
+    - postfix-policyd-spf-python
+    - pyzor
+    - spamassassin
 
 #- name: ensure gitlabhq_production database is present
 #  mysql_db: 
@@ -49,6 +41,20 @@
 #  with_items:
 #    - "%"
 #    - localhost
+
+- name: update aliases from template
+  template:
+    src: etc/aliases
+    dest: /etc/aliases
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart postfix
+    - restart amavisd
+
+- name: rehash aliases
+  command: newaliases
 
 - name: update mailname from template
   template:
