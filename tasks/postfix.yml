@@ -24,6 +24,7 @@
     - opendkim-tools
     - postfix
     - postfix-gld 
+    - postfix-pcre
     - postfix-policyd-spf-python
     - pyzor
     - spamassassin
