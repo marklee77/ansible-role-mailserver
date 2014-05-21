@@ -1,3 +1,5 @@
+biff = no
+
 # INTERNET HOST AND DOMAIN NAMES
 
 myhostname = {{ postfix_server_fqdn }}
@@ -8,12 +10,14 @@ myorigin = $mydomain
 
 proxy_interfaces = {{ postfix_proxy_interfaces }}
 
-# FIXME: loop over subdomain list?
-mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain,
-	mail.$mydomain, www.$mydomain, ftp.$mydomain
+mydestination = $myhostname, localhost.$mydomain, $mydomain,
+    {% for subdomain in postfix_subdomain_list %}
+        {{ subdomain }},
+    {% endfor %}
+    localhost 
 
-# REJECTING MAIL FOR UNKNOWN LOCAL USERS
-
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
 local_recipient_maps = unix:passwd.byname $alias_maps
 
 # TRUST AND RELAY CONTROL
@@ -32,11 +36,6 @@ smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 # INPUT RATE CONTROL
 
 in_flow_delay = 1s
-
-# ALIAS DATABASE
-
-alias_maps = hash:/etc/aliases
-alias_database = hash:/etc/aliases
 
 # ADDRESS EXTENSIONS (e.g., user+foo)
 
@@ -57,7 +56,16 @@ home_mailbox = Maildir/
 
 # JUNK MAIL CONTROLS
 
+unknown_address_reject_code = 554
+unknown_hostname_reject_code = 554
+unknown_client_reject_code = 554
+disable_vrfy_command = yes
+
+smtpd_banner = $myhostname ESMTP $mail_name 
+
 smtpd_helo_required = yes
+strict_rfc821_envelopes = yes
+header_checks = regexp:/etc/postfix/header_checks
 
 smtpd_client_restrictions = 
     permit_sasl_authenticated,
@@ -66,10 +74,18 @@ smtpd_client_restrictions =
     reject_rbl_client bl.spamcop.net,
     reject_rbl_client cbl.abuseat.org,
     reject_rbl_client truncate.gbudb.net
+    reject_rbl_client dnsbl.sorbs.net
+
 smtpd_helo_restrictions = 
     reject_invalid_hostname, reject_non_fqdn_hostname
+
 smtpd_sender_restrictions = 
-    reject_non_fqdn_sender, reject_unknown_sender_domain
+    reject_non_fqdn_sender, 
+    reject_unknown_sender_domain,
+    reject_rhsbl_sender XXX
+
+policy-spf_time_limit = 3600s
+
 smtpd_recipient_restrictions = 
     permit_mynetworks, 
     reject_non_fqdn_recipient,
@@ -80,25 +96,10 @@ smtpd_recipient_restrictions =
 
 smtpd_data_restrictions = reject_unauth_pipelining
 
-disable_vrfy_command = yes
-
-unknown_address_reject_code = 554
-unknown_hostname_reject_code = 554
-unknown_client_reject_code = 554
-
-strict_rfc821_envelopes = yes
-header_checks = regexp:/etc/postfix/header_checks
-
 milter_default_action = accept
 milter_protocol = 2
+
 smtpd_milters = inet:localhost:8891, inet:localhost:8892
 non_smtpd_milters = inet:localhost:8891, inet:localhost:8892
 
-# SHOW SOFTWARE VERSION OR NOT
-
-smtpd_banner = $myhostname ESMTP $mail_name 
-
-# MISC
-
-policy-spf_time_limit = 3600s
-
+content_filter = smtp-amavis:[localhost]:10024
