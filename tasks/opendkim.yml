@@ -19,19 +19,74 @@
   notify:
     - restart opendkim
 
-- name: ensure /etc/mail exists
+- name: ensure /etc/opendkim directory exists
   file:
-    path: /etc/mail
-    owner: root
-    group: root
+    path: /etc/opendkim
+    owner: opendkim
+    group: opendkim
     mode: 0755
     state: directory
 
-- name: create domain key if it does not already exist
-  command: opendkim-genkey -t -S -s mail -D /etc/mail -d {{ postfix_domain }}
-           creates=/etc/mail/mail.private
+- name: update opendkim/KeyTable from template
+  template:
+    src: etc/opendkim/KeyTable
+    dest: /etc/opendkim/KeyTable
+    owner: opendkim
+    group: opendkim
+    mode: 0644
   notify:
     - restart opendkim
+
+- name: update opendkim/SigningTable from template
+  template:
+    src: etc/opendkim/SigningTable
+    dest: /etc/opendkim/SigningTable
+    owner: opendkim
+    group: opendkim
+    mode: 0644
+  notify:
+    - restart opendkim
+
+- name: update opendkim/TrustedHosts from template
+  template:
+    src: etc/opendkim/TrustedHosts
+    dest: /etc/opendkim/TrustedHosts
+    owner: opendkim
+    group: opendkim
+    mode: 0644
+  notify:
+    - restart opendkim
+
+- name: create domain key if it does not already exist
+  command: opendkim-genkey -r -h rsa-sha256 -s mail -D /etc/opendkim -d {{ postfix_server_fqdn }}
+           creates=/etc/opendkim/mail.private
+  notify:
+    - restart opendkim
+
+- name: ensure domain key has correct permissions
+  file:
+    path: /etc/opendkim/mail.private
+    owner: opendkim
+    group: opendkim
+    mode: 0600
+    state: file
+
+- name: ensure /var/spool/postfix/opendkim exists
+  file:
+    path: /var/spool/postfix/opendkim
+    owner: opendkim
+    group: opendkim
+    mode: 0700
+    state: directory
+
+- name: ensure postfix user is a member of opendkim group
+  user:
+    name: postfix
+    append: yes
+    groups: opendkim
+    state: present
+  notify:
+    - restart postfix
 
 - name: ensure opendkim service is started and enabled
   service:
@@ -40,3 +95,4 @@
     enabled: yes
   with_items:
     - opendkim
+

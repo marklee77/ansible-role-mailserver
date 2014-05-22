@@ -1,0 +1,102 @@
+---
+- name: ensure dependencies available through apt are installed
+  apt: 
+    pkg: "{{ item }}" 
+    state: latest 
+    update_cache: yes 
+    cache_valid_time: 600
+  with_items:
+    - clamav-daemon
+    - clamav-freshclam
+    - fuzzyocr
+    - libmail-dkim-perl
+    - pyzor
+    - razor
+    - spamass-milter
+
+- name: create spamd group for spamass-milter and spamd
+  group: 
+    name: spamd
+    state: present
+  
+- name: create spamd user to run spam assassin daemon
+  user:
+    name: spamd
+    group: spamd
+    home: /var/lib/spamassassin
+    shell: /bin/false
+    state: present
+
+- name: add spamass-milter user to spamd group
+  user:
+    name: spamass-milter
+    append: yes
+    groups: spamd
+    state: present
+
+- name: update /etc/default/spamassassin from template
+  template:
+    src: etc/default/spamassassin
+    dest: /etc/default/spamassassin
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart spamassassin
+
+- name: update /etc/default/spamassassin from template
+  template:
+    src: etc/default/spamassassin
+    dest: /etc/default/spamassassin
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart spamassassin
+
+- name: update init.pre from template
+  template:
+    src: etc/spamassassin/init.pre
+    dest: /etc/spamassassin/init.pre
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart spamassassin
+
+- name: update local.cf from template
+  template:
+    src: etc/spamassassin/local.cf
+    dest: /etc/spamassassin/local.cf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart spamassassin
+
+- name: ensure /var/spool/postfix/spamass directory exists
+  file:
+    path: /var/spool/postfix/spamass
+    owner: spamd
+    group: spamd
+    mode: 0700
+    state: directory
+
+- name: ensure postfix user is a member of spamd group
+  user:
+    name: postfix
+    append: yes
+    groups: spamd
+    state: present
+  notify:
+    - restart postfix
+
+- name: ensure spamassassin services are started and enabled
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - spamassassin
+    - spamass-milter
+

@@ -2,7 +2,8 @@
 - include: upgrade.yml
 - include: mysql.yml
 - include: dovecot.yml
+- include: postfix.yml
 - include: opendkim.yml
 - include: gld.yml
-- include: amavis.yml
-- include: postfix.yml
+#- include: clamav.yml
+- include: spamassassin.yml

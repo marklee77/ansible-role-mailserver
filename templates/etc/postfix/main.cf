@@ -128,10 +128,10 @@ smtpd_recipient_restrictions =
 smtpd_data_restrictions = reject_unauth_pipelining, permit
 
 milter_default_action = accept
-milter_protocol = 2
+milter_connect_macros = j {daemon_name} v {if_name} _
 
-smtpd_milters = inet:localhost:8891
-non_smtpd_milters = inet:localhost:8891
+smtpd_milters = unix:/spamass/spamass.sock unix:/clamav/clamav-milter.ctl unix:/opendkim/opendkim.sock
+non_smtpd_milters = $smtpd_milters
 
 content_filter = smtp-amavis:[localhost]:10024
 

@@ -15,7 +15,10 @@
     state: restarted
     pattern: /usr/sbin/gld
 
-- name: restart amavis
+- name: restart spamassassin
   service:
-    name: amavis
+    name: "{{ item }}"
     state: restarted
+  with_items:
+    - spamassassin
+    - spamass-milter

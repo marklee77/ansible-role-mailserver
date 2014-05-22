@@ -1,5 +1,0 @@
-use strict;
-
-$myhostname = "{{ postfix_server_fqdn }}";
-
-1;  # ensure a defined return
