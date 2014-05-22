@@ -1,10 +1,10 @@
 SAHOME="/var/lib/spamassassin"
-SAGLOBALCFGPATH="/etc/spamassassin"
+SASITECONFIGPATH="/etc/spamassassin"
 
 # Change to one to enable spamd
 ENABLED=1
 
-OPTIONS="-x --max-children 5 --helper-home-dir ${SAHOME} -u spamd -g spamd --siteconfigpath=${SAGLOBALCONFIGPATH} --socketpath=/var/spool/postfix/spamass/spamass.sock --socketowner=spamd --socketgroup=spamd --socketmode=0660"
+OPTIONS="-x --max-children=5 --helper-home-dir=${SAHOME} -u spamd -g spamd --siteconfigpath=${SASITECONFIGPATH} --socketpath=/var/spool/postfix/spamd/spamd.sock --socketowner=spamd --socketgroup=spamd --socketmode=0660"
 
 # Pid file
 # Where should spamd write its PID to file? If you use the -u or

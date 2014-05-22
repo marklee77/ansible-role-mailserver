@@ -74,9 +74,9 @@
   notify:
     - restart spamassassin
 
-- name: ensure /var/spool/postfix/spamass directory exists
+- name: ensure /var/spool/postfix/spamd directory exists
   file:
-    path: /var/spool/postfix/spamass
+    path: /var/spool/postfix/spamd
     owner: spamd
     group: spamd
     mode: 0700
