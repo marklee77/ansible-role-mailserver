@@ -1,9 +1,10 @@
 ---
 postfix_root_mysql_password: "{{ lookup('password', inventory_dir + '/credentials/root-mysql-password') }}"
+postfix_gld_mysql_password: "{{ lookup('password', inventory_dir + '/credentials/gld-mysql-password') }}"
 postfix_mailname: mail.localdomain
 postfix_server_fqdn: mail.localdomain
 postfix_domain: localdomain
-postfix_proxy_interfaces:
+postfix_proxy_interfaces: ""
 postfix_ssl_cert_file: ls /etc/ssl/certs/ssl-cert-snakeoil.pem
 postfix_ssl_key_file: ls /etc/ssl/private/ssl-cert-snakeoil.key
 postfix_subdomain_list:

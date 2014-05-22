@@ -6,8 +6,13 @@
 
 - name: restart opendkim
   service:
-    name: postfix
-    state: opendkim
+    name: opendkim
+    state: restarted
+
+- name: restart gld
+  service:
+    name: gld
+    state: restarted
 
 - name: restart amavis
   service:

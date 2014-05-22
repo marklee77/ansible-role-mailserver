@@ -29,19 +29,6 @@
     - pyzor
     - spamassassin
 
-#- name: ensure gitlabhq_production database is present
-#  mysql_db: 
-#    name: gitlabhq_production
-
-#- name: ensure git database user is present
-#  mysql_user: 
-#    name: git
-#    host: "{{ item }}" 
-#    password: "{{ gitlab_git_mysql_password }}" 
-#    priv: gitlabhq_production.*:ALL
-#  with_items:
-#    - "%"
-#    - localhost
 
 - name: update mailname from template
   template:
@@ -53,16 +40,6 @@
   notify:
     - restart postfix
     - restart amavis
-
-- name: update default/opendkim from template
-  template:
-    src: etc/default/opendkim
-    dest: /etc/default/opendkim
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart opendkim
 
 - name: update opendkim.conf from template
   template:
@@ -77,6 +54,48 @@
 - name: create domain key if it does not already exist
   command: opendkim-genkey -t -S -s mail -D /etc/mail -d {{ postfix_domain }}
            creates=/etc/mail/mail.private
+  notify:
+    - restart opendkim
+
+- name: ensure gld database is present
+  mysql_db: 
+    login_user: root
+    login_password: "{{ postfix_root_mysql_password }}"
+    name: gld
+    state: import
+    target: /usr/share/gld/tables.mysql
+
+# FIXME: import whitelist...
+
+- name: ensure gld database user is present
+  mysql_user: 
+    name: gld
+    host: "{{ item }}" 
+    password: "{{ postfix_gld_mysql_password }}" 
+    priv: gld.*:ALL
+  with_items:
+    - "%"
+    - localhost
+
+- name: update default/gld from template
+  template:
+    src: etc/default/gld
+    dest: /etc/default/gld
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart gld
+
+- name: update gld.conf from template
+  template:
+    src: etc/gld.conf
+    dest: /etc/gld.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart gld
 
 - name: update main.cf from template
   template:
