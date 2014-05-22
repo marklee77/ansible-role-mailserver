@@ -13,6 +13,7 @@
   service:
     name: gld
     state: restarted
+    patter: /usr/sbin/gld
 
 - name: restart amavis
   service:

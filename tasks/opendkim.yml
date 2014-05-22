@@ -19,6 +19,14 @@
   notify:
     - restart opendkim
 
+- name: ensure /etc/mail exists
+  file:
+    path: /etc/mail
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
 - name: create domain key if it does not already exist
   command: opendkim-genkey -t -S -s mail -D /etc/mail -d {{ postfix_domain }}
            creates=/etc/mail/mail.private

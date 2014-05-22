@@ -54,6 +54,7 @@
     name: "{{ item }}"
     state: started
     enabled: yes
+    pattern: /usr/sbin/gld
   with_items:
     - gld
 

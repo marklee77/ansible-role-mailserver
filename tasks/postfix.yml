@@ -65,5 +65,4 @@
     enabled: yes
   with_items:
     - postfix
-    - postfix-spf?
 
