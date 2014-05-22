@@ -22,6 +22,8 @@ alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
 local_recipient_maps = unix:passwd.byname $alias_maps
 
+mailbox_size_limit = 0
+
 # TRUST AND RELAY CONTROL
 
 mynetworks = 127.0.0.0/8
@@ -29,36 +31,50 @@ relay_domains = $mydestination
 
 # TLS parameters
 
+smtp_use_tls = yes
+smtp_tls_security_level = may
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
 smtpd_use_tls = yes
+smtpd_tls_ask_ccert = yes
+smtpd_tls_auth_only = yes
+smtpd_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 smtpd_tls_cert_file = {{ postfix_ssl_cert_file }}
+smtpd_tls_ciphers = high
 smtpd_tls_key_file = {{ postfix_ssl_key_file }}
 smtpd_tls_protocols = !SSLv2, !SSLv3
-smtpd_tls_security_level=may
+sttpd_tls_received_header = yes
+smtpd_tls_security_level = may
 smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
-smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtpd_tls_session_cache_timeout = 3600s
+
+tls_random_source = dev:/dev/urandom
 
 # AUTHENTICATION
 
 smtpd_sasl_auth_enable = yes
+smtpd_sasl_authenticated_header = yes
 smtpd_sasl_type = dovecot
-smtpd_sasl_path = private/auth-client
-smtpd_sasl_local_domain =
+smtpd_sasl_path = private/dovecot-auth
+smtpd_sasl_local_domain = $myhostname
 smtpd_sasl_security_options = noanonymous
 
 broken_sasl_auth_clients = yes
 
 # ADDRESS EXTENSIONS (e.g., user+foo)
 
+append_dot_mydomain = no
 recipient_delimiter = +
 
 # DELIVERY TO MAILBOX
 
 home_mailbox = Maildir/
-#mailbox_command = /usr/bin/procmail
+mailbox_command = /usr/lib/dovecot/deliver -c /etc/dovecot/dovecot.conf -m "${EXTENSION}"
 
 # JUNK MAIL CONTROLS
 
 smtpd_banner = $myhostname ESMTP $mail_name 
+readme_directory = no
 
 in_flow_delay = 10s
 
@@ -70,24 +86,33 @@ strict_rfc821_envelopes = yes
 
 smtpd_client_restrictions = 
     permit_sasl_authenticated,
-    reject_unauth_destination, 
+    reject_unknown_client_hostname,
     {% for rbl in postfix_rbl_list %}
-        reject_rbl_client {{ rbl }},
-    {% endfor %}
+    reject_rbl_client {{ rbl }},
+    {% endfor -%}
     {% for rhsbl in postfix_rhsbl_list %}
-        reject_rhsbl_client {{ rhsbl }},
-    {% endfor %}
+    reject_rhsbl_client {{ rhsbl }},
+    {% endfor -%}
+    check_policy_service unix:private/policy-spf,
+    check_policy_service inet:127.0.0.1:2525,     # greylist
     permit
 
 smtpd_helo_restrictions = 
-    reject_invalid_hostname, reject_non_fqdn_hostname, permit
+    reject_invalid_helo_hostname, 
+    reject_non_fqdn_helo_hostname,
+    reject_unknown_helo_hostname, 
+    {% for rhsbl in postfix_rhsbl_list %}
+    reject_rhsbl_helo_hostname {{ rhsbl }},
+    {% endfor -%}
+    permit
 
 smtpd_sender_restrictions = 
     reject_non_fqdn_sender, 
     reject_unknown_sender_domain,
     {% for rhsbl in postfix_rhsbl_list %}
-        reject_rhsbl_sender {{ rhsbl }},
-    {% endfor %}
+    reject_rhsbl_sender {{ rhsbl }},
+    {% endfor -%}
+    reject_sender_login_mismatch,
     permit
 
 policy-spf_time_limit = 3600s
@@ -98,8 +123,6 @@ smtpd_recipient_restrictions =
     reject_unknown_recipient_domain,
     reject_unauth_destination, 
     reject_unlisted_recipient,
-    check_policy_service unix:private/policy-spf,
-    check_policy_service inet:127.0.0.1:2525,
     permit
 
 smtpd_data_restrictions = reject_unauth_pipelining, permit
@@ -110,7 +133,7 @@ milter_protocol = 2
 smtpd_milters = inet:localhost:8891
 non_smtpd_milters = inet:localhost:8891
 
-#content_filter = smtp-amavis:[localhost]:10024
+content_filter = smtp-amavis:[localhost]:10024
 
 unknown_address_reject_code = 554
 unknown_hostname_reject_code = 554

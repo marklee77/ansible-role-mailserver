@@ -14,3 +14,21 @@
     - pyzor
     - spamassassin
 
+- name: update mailname from template
+  template:
+    src: etc/amavis/conf.d/05-node_id
+    dest: /etc/amavis/conf.d/05-node_id
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart amavis
+
+- name: ensure amavis service is started and enabled
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - amavis
+

@@ -1,8 +1,8 @@
 ---
 - include: upgrade.yml
 - include: mysql.yml
+- include: dovecot.yml
 - include: opendkim.yml
 - include: gld.yml
 - include: amavis.yml
-- include: dovecot.yml
 - include: postfix.yml

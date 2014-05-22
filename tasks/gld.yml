@@ -13,11 +13,13 @@
     name: gld
     state: present
 
-# FIXME
-#- name: create database structure
-#  command: /usr/share/gld/tables.mysql
+- name: create database structure
+  shell: perl -pe 's/TYPE=/ENGINE=/g' /usr/share/gld/tables.mysql | mysql gld && touch /etc/.gld_tables_created
+         creates=/etc/.gld_tables_created
 
-# FIXME: import whitelist...
+- name: create database structure
+  shell: mysql gld < /usr/share/gld/table-whitelist.sql && touch /etc/.gld_whitelist_imported
+         creates=/etc/.gld_whitelist_imported
 
 - name: ensure gld database user is present
   mysql_user: 
