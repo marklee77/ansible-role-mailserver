@@ -1,0 +1,34 @@
+---
+- name: ensure dependencies available through apt are installed
+  apt: 
+    pkg: "{{ item }}" 
+    state: latest 
+    update_cache: yes 
+    cache_valid_time: 600
+  with_items:
+    - opendkim
+    - opendkim-tools
+
+- name: update opendkim.conf from template
+  template:
+    src: etc/opendkim.conf
+    dest: /etc/opendkim.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart opendkim
+
+- name: create domain key if it does not already exist
+  command: opendkim-genkey -t -S -s mail -D /etc/mail -d {{ postfix_domain }}
+           creates=/etc/mail/mail.private
+  notify:
+    - restart opendkim
+
+- name: ensure opendkim service is started and enabled
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - opendkim

@@ -1,0 +1,36 @@
+---
+- name: ensure dependencies available through apt are installed
+  apt: 
+    pkg: "{{ item }}" 
+    state: latest 
+    update_cache: yes 
+    cache_valid_time: 600
+  with_items:
+    - dovecot-antispam
+    - dovecot-core
+    - dovecot-imapd
+    - dovecot-managesieved
+    - dovecot-metadata-plugin
+    - dovecot-pop3d
+    - dovecot-sieve
+    - dovecot-solr
+
+#- name: update gld.conf from template
+#  template:
+#    src: etc/gld.conf
+#    dest: /etc/gld.conf
+#    owner: root
+#    group: root
+#    mode: 0644
+#  notify:
+#    - restart gld
+
+#- name: ensure all dovecot services are started and enabled
+#  service:
+#    name: "{{ item }}"
+#    state: started
+#    enabled: yes
+#  with_items:
+#    - opendkim
+#    - postfix
+

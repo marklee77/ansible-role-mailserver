@@ -1,0 +1,59 @@
+---
+- name: ensure dependencies available through apt are installed
+  apt: 
+    pkg: "{{ item }}" 
+    state: latest 
+    update_cache: yes 
+    cache_valid_time: 600
+  with_items:
+    - postfix-gld 
+
+- name: ensure gld database is present
+  mysql_db: 
+    name: gld
+    state: present
+
+# FIXME
+#- name: create database structure
+#  command: /usr/share/gld/tables.mysql
+
+# FIXME: import whitelist...
+
+- name: ensure gld database user is present
+  mysql_user: 
+    name: gld
+    host: "{{ item }}" 
+    password: "{{ postfix_gld_mysql_password }}" 
+    priv: gld.*:ALL
+  with_items:
+    - "%"
+    - localhost
+
+- name: update default/gld from template
+  template:
+    src: etc/default/gld
+    dest: /etc/default/gld
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart gld
+
+- name: update gld.conf from template
+  template:
+    src: etc/gld.conf
+    dest: /etc/gld.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart gld
+
+- name: ensure gld service is started and enabled
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - gld
+

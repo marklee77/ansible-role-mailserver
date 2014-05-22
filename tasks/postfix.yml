@@ -1,4 +1,5 @@
 ---
+# FIXME: where does cron-deja-vu go?
 - name: ensure dependencies available through apt are installed
   apt: 
     pkg: "{{ item }}" 
@@ -6,29 +7,10 @@
     update_cache: yes 
     cache_valid_time: 600
   with_items:
-    - amavisd-new
-    - clamav-daemon
-    - clamav-freshclam
     - cron-deja-vu
-    - dovecot-antispam
-    - dovecot-core
-    - dovecot-imapd
-    - dovecot-managesieved
-    - dovecot-metadata-plugin
-    - dovecot-pop3d
-    - dovecot-sieve
-    - dovecot-solr
-    - dspam
-    - fuzzyocr
-    - opendkim
-    - opendkim-tools
     - postfix
-    - postfix-gld 
     - postfix-pcre
     - postfix-policyd-spf-python
-    - pyzor
-    - spamassassin
-
 
 - name: update mailname from template
   template:
@@ -40,62 +22,6 @@
   notify:
     - restart postfix
     - restart amavis
-
-- name: update opendkim.conf from template
-  template:
-    src: etc/opendkim.conf
-    dest: /etc/opendkim.conf
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart opendkim
-
-- name: create domain key if it does not already exist
-  command: opendkim-genkey -t -S -s mail -D /etc/mail -d {{ postfix_domain }}
-           creates=/etc/mail/mail.private
-  notify:
-    - restart opendkim
-
-- name: ensure gld database is present
-  mysql_db: 
-    login_user: root
-    login_password: "{{ postfix_root_mysql_password }}"
-    name: gld
-    state: import
-    target: /usr/share/gld/tables.mysql
-
-# FIXME: import whitelist...
-
-- name: ensure gld database user is present
-  mysql_user: 
-    name: gld
-    host: "{{ item }}" 
-    password: "{{ postfix_gld_mysql_password }}" 
-    priv: gld.*:ALL
-  with_items:
-    - "%"
-    - localhost
-
-- name: update default/gld from template
-  template:
-    src: etc/default/gld
-    dest: /etc/default/gld
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart gld
-
-- name: update gld.conf from template
-  template:
-    src: etc/gld.conf
-    dest: /etc/gld.conf
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart gld
 
 - name: update main.cf from template
   template:
@@ -138,6 +64,6 @@
     state: started
     enabled: yes
   with_items:
-    - opendkim
     - postfix
+    - postfix-spf?
 
