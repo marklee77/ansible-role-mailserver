@@ -21,7 +21,6 @@
     mode: 0644
   notify:
     - restart postfix
-    - restart amavis
 
 - name: update main.cf from template
   template:
