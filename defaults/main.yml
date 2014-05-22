@@ -1,4 +1,5 @@
 ---
+postfix_root_mysql_password: "{{ lookup('password', inventory_dir + '/credentials/root-mysql-password') }}"
 postfix_mailname: mail.localdomain
 postfix_server_fqdn: mail.localdomain
 postfix_domain: localdomain

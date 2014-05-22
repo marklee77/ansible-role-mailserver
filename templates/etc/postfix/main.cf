@@ -80,7 +80,7 @@ smtpd_client_restrictions =
     permit
 
 smtpd_helo_restrictions = 
-    reject_invalid_hostname, reject_non_fqdn_hostname
+    reject_invalid_hostname, reject_non_fqdn_hostname, permit
 
 smtpd_sender_restrictions = 
     reject_non_fqdn_sender, 
@@ -98,17 +98,21 @@ smtpd_recipient_restrictions =
     reject_unknown_recipient_domain,
     reject_unauth_destination, 
     reject_unlisted_recipient,
-    check_policy_service unix:private/policy-spf
+    check_policy_service unix:private/policy-spf,
+    permit
 
-smtpd_data_restrictions = reject_unauth_pipelining
+smtpd_data_restrictions = reject_unauth_pipelining, permit
 
 milter_default_action = accept
 milter_protocol = 2
 
-smtpd_milters = inet:localhost:8891, inet:localhost:8892
-non_smtpd_milters = inet:localhost:8891, inet:localhost:8892
+smtpd_milters = inet:localhost:8891
+non_smtpd_milters = inet:localhost:8891
 
-content_filter = smtp-amavis:[localhost]:10024
+#smtpd_milters = inet:localhost:8891, inet:localhost:8892
+#non_smtpd_milters = inet:localhost:8891, inet:localhost:8892
+
+#content_filter = smtp-amavis:[localhost]:10024
 
 unknown_address_reject_code = 554
 unknown_hostname_reject_code = 554

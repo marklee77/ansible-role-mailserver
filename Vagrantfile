@@ -13,7 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.memory = 1024
   end
 
-#  config.vm.provision "ansible" do |ansible|
-#    ansible.playbook = "test.yml"
-#  end
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "test.yml"
+  end
 end

@@ -8,6 +8,6 @@ webmaster: root
 www: root
 ftp: root
 abuse: root
-{% if postfix_root_alias_dest %}
+{% if postfix_root_alias_dest is defined %} # FIXME
 root: {{ postfix_root_alias_dest }}
 {% endif %}

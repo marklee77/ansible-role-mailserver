@@ -43,20 +43,6 @@
 #    - "%"
 #    - localhost
 
-- name: update aliases from template
-  template:
-    src: etc/aliases
-    dest: /etc/aliases
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart postfix
-    - restart amavisd
-
-- name: rehash aliases
-  command: newaliases
-
 - name: update mailname from template
   template:
     src: etc/mailname
@@ -66,7 +52,31 @@
     mode: 0644
   notify:
     - restart postfix
-    - restart amavisd
+    - restart amavis
+
+- name: update default/opendkim from template
+  template:
+    src: etc/default/opendkim
+    dest: /etc/default/opendkim
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart opendkim
+
+- name: update opendkim.conf from template
+  template:
+    src: etc/opendkim.conf
+    dest: /etc/opendkim.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart opendkim
+
+- name: create domain key if it does not already exist
+  command: opendkim-genkey -t -S -s mail -D /etc/mail -d {{ postfix_domain }}
+           creates=/etc/mail/mail.private
 
 - name: update main.cf from template
   template:
@@ -88,8 +98,27 @@
   notify:
     - restart postfix
 
-- name: ensure postfix is started and enabled
+- name: update aliases from template
+  template:
+    src: etc/aliases
+    dest: /etc/aliases
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart postfix
+
+- name: rehash aliases
+  command: newaliases
+  notify:
+    - restart postfix
+
+- name: ensure all mail services are started and enabled
   service:
-    name: postfix
+    name: "{{ item }}"
     state: started
     enabled: yes
+  with_items:
+    - opendkim
+    - postfix
+
