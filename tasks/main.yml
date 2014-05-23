@@ -2,7 +2,7 @@
 - include: upgrade.yml
 - include: dovecot.yml
 - include: postfix.yml
-- include: postgrey
+- include: postgrey.yml
 #- include: opendkim.yml
 #- include: clamav.yml
 #- include: spamassassin.yml

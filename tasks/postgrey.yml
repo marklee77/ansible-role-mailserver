@@ -20,7 +20,7 @@
 
 - name: ensure /var/spool/postfix/postgrey directory exists
   file:
-    path: /var/spool/postfix/postgrey
+    path: /var/spool/postfix/private/postgrey
     owner: postgrey
     group: postgrey
     mode: 0700

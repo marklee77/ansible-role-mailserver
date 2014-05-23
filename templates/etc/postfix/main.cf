@@ -4,13 +4,13 @@ biff = no
 
 # INTERNET HOST AND DOMAIN NAMES
 
-myhostname = {{ postfix_server_fqdn }}
-mydomain = {{ postfix_domain }}
+myhostname = {{ mailserver_fqdn }}
+mydomain = {{ mailserver_domain }}
 myorigin = $mydomain
 
 # RECEIVING MAIL
 
-proxy_interfaces = {{ postfix_proxy_interfaces }}
+proxy_interfaces = {{ mailserver_proxy_interfaces }}
 
 mydestination = 
     localhost,
@@ -18,7 +18,7 @@ mydestination =
     $myhostname,
     {{ ansible_hostname }},
     {{ ansible_fqdn }},
-    {% for subdomain in postfix_subdomain_list -%}
+    {% for subdomain in mailserver_subdomain_list -%}
     {{ subdomain }},
     {{ subdomain }}.$mydomain,
     {% endfor -%}
@@ -39,8 +39,8 @@ relay_domains = $mydestination
 
 smtp_use_tls = yes
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
-smtp_tls_cert_file = {{ postfix_ssl_cert_file }}
-smtp_tls_key_file = {{ postfix_ssl_key_file }}
+smtp_tls_cert_file = {{ mailserver_ssl_cert_file }}
+smtp_tls_key_file = {{ mailserver_ssl_key_file }}
 smtp_tls_security_level = may
 smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 
@@ -48,9 +48,9 @@ smtpd_use_tls = yes
 smtpd_tls_ask_ccert = yes
 smtpd_tls_auth_only = yes
 smtpd_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
-smtpd_tls_cert_file = {{ postfix_ssl_cert_file }}
+smtpd_tls_cert_file = {{ mailserver_ssl_cert_file }}
 smtpd_tls_ciphers = high
-smtpd_tls_key_file = {{ postfix_ssl_key_file }}
+smtpd_tls_key_file = {{ mailserver_ssl_key_file }}
 smtpd_tls_protocols = !SSLv2, !SSLv3
 smtpd_tls_received_header = yes
 smtpd_tls_security_level = may
@@ -92,20 +92,19 @@ policy-spf_time_limit = 3600s
 
 smtpd_client_restrictions = 
     reject_unknown_client_hostname,
-    {% for rbl in postfix_rbl_list -%}
+    {% for rbl in mailserver_rbl_list -%}
     reject_rbl_client {{ rbl }},
     {% endfor -%}
-    {% for rhsbl in postfix_rhsbl_list -%}
+    {% for rhsbl in mailserver_rhsbl_list -%}
     reject_rhsbl_client {{ rhsbl }},
     {% endfor -%}
-#    check_policy_service inet:127.0.0.1:2525,     # greylist FIXME: socket?
     permit
 
 smtpd_helo_restrictions = 
     reject_invalid_helo_hostname, 
     reject_non_fqdn_helo_hostname,
     reject_unknown_helo_hostname, 
-    {% for rhsbl in postfix_rhsbl_list -%}
+    {% for rhsbl in mailserver_rhsbl_list -%}
     reject_rhsbl_helo_hostname {{ rhsbl }},
     {% endfor -%}
     permit
@@ -113,7 +112,7 @@ smtpd_helo_restrictions =
 smtpd_sender_restrictions = 
     reject_non_fqdn_sender, 
     reject_unknown_sender_domain,
-    {% for rhsbl in postfix_rhsbl_list -%}
+    {% for rhsbl in mailserver_rhsbl_list -%}
     reject_rhsbl_sender {{ rhsbl }},
     {% endfor -%}
     check_policy_service unix:private/policy-spf,

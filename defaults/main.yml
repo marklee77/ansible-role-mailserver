@@ -1,8 +1,8 @@
 ---
 mailserver_root_mysql_password: "{{ lookup('password', inventory_dir + '/credentials/root-mysql-password') }}"
 mailserver_gld_mysql_password: "{{ lookup('password', inventory_dir + '/credentials/gld-mysql-password') }}"
-mailserver_fqdn: {{ ansible_fqdn }}
-mailserver_domain: {{ ansible_domain }}
+mailserver_domain: localdomain
+mailserver_fqdn: localhost.localdomain
 mailserver_subdomain_list:
   - www
   - ftp
@@ -18,3 +18,4 @@ mailserver_rbl_list:
   - dnsbl.sorbs.net
 mailserver_rhsbl_list:
   - rhsbl.sorbs.net
+mailserver_aliases: {}
