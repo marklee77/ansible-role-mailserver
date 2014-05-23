@@ -8,6 +8,28 @@
   with_items:
     - sqlgrey
 
+- name: ensure sqlgrey database is present
+  mysql_db:
+    name: sqlgrey
+
+- name: ensure sqlgrey database user is present
+  mysql_user:
+    name: sqlgrey
+    host: "{{ item }}"
+    password: "{{ mailserver_sqlgrey_mysql_password }}"
+    priv: gitlabhq_production.*:ALL
+  with_items:
+    - "%"
+    - localhost
+
+- name: copy .my.cnf file with sqlgrey password credentials
+  template:
+    src: var/lib/sqlgrey/.my.cnf
+    dest: /var/lib/sqlgrey/.my.cnf
+    owner: sqlgrey
+    group: sqlgrey
+    mode: 0600
+
 - name: update sqlgrey.conf from template
   template:
     src: etc/sqlgrey/sqlgrey.conf
@@ -17,14 +39,6 @@
     mode: 0600
   notify:
     - restart sqlgrey
-
-- name: copy .my.cnf file with sqlgrey password credentials
-  template:
-    src: var/lib/sqlgrey/.my.cnf
-    dest: /var/lib/sqlgrey/.my.cnf
-    owner: sqlgrey
-    group: sqlgrey
-    mode: 0600
 
 - name: ensure /var/spool/postfix/private/sqlgrey directory exists
   file:
@@ -46,6 +60,7 @@
 - name: ensure sqlgrey service is started and enabled
   service:
     name: "{{ item }}"
+    pattern: /usr/sbin/sqlgrey
     state: started
     enabled: yes
   with_items:

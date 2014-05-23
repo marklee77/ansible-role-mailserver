@@ -17,6 +17,7 @@
 - name: restart sqlgrey
   service:
     name: sqlgrey
+    pattern: /usr/sbin/sqlgrey
     state: restarted
 
 - name: restart spamassassin
