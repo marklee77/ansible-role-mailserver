@@ -15,12 +15,12 @@ proxy_interfaces = {{ postfix_proxy_interfaces }}
 mydestination = 
     localhost,
     localhost.$mydomain, 
-    $myhostname, 
-    {% for subdomain in postfix_subdomain_list %}
+    $myhostname,
+    {% for subdomain in postfix_subdomain_list -%}
     {{ subdomain }},
     {{ subdomain }}.$mydomain,
-    {% endfor %}
-    $mydomain,
+    {% endfor -%}
+    $mydomain
 
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
@@ -70,15 +70,14 @@ recipient_delimiter = +
 
 # DELIVERY TO MAILBOX
 
-home_mailbox = Maildir/
-mailbox_command = /usr/lib/dovecot/deliver -c /etc/dovecot/dovecot.conf -m "${EXTENSION}"
+mailbox_transport = lmtp:unix:private/dovecot-lmtp
 
 # JUNK MAIL CONTROLS
 
 smtpd_banner = $myhostname ESMTP
 readme_directory = no
 
-in_flow_delay = 10s # FIXME: not sure about this one...
+in_flow_delay = 1s 
 
 disable_vrfy_command = yes
 
@@ -90,10 +89,10 @@ policy-spf_time_limit = 3600s
 
 smtpd_client_restrictions = 
     reject_unknown_client_hostname,
-    {% for rbl in postfix_rbl_list %}
+    {% for rbl in postfix_rbl_list -%}
     reject_rbl_client {{ rbl }},
     {% endfor -%}
-    {% for rhsbl in postfix_rhsbl_list %}
+    {% for rhsbl in postfix_rhsbl_list -%}
     reject_rhsbl_client {{ rhsbl }},
     {% endfor -%}
 #    check_policy_service inet:127.0.0.1:2525,     # greylist FIXME: socket?
@@ -103,7 +102,7 @@ smtpd_helo_restrictions =
     reject_invalid_helo_hostname, 
     reject_non_fqdn_helo_hostname,
     reject_unknown_helo_hostname, 
-    {% for rhsbl in postfix_rhsbl_list %}
+    {% for rhsbl in postfix_rhsbl_list -%}
     reject_rhsbl_helo_hostname {{ rhsbl }},
     {% endfor -%}
     permit
@@ -111,7 +110,7 @@ smtpd_helo_restrictions =
 smtpd_sender_restrictions = 
     reject_non_fqdn_sender, 
     reject_unknown_sender_domain,
-    {% for rhsbl in postfix_rhsbl_list %}
+    {% for rhsbl in postfix_rhsbl_list -%}
     reject_rhsbl_sender {{ rhsbl }},
     {% endfor -%}
     check_policy_service unix:private/policy-spf,

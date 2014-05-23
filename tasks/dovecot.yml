@@ -1,5 +1,5 @@
 ---
-- name: ensure dependencies available through apt are installed
+- name: ensure dovecot packages are installed
   apt: 
     pkg: "{{ item }}" 
     state: latest 
@@ -9,6 +9,7 @@
     - dovecot-antispam
     - dovecot-core
     - dovecot-imapd
+    - dovecot-lmtpd
     - dovecot-managesieved
     - dovecot-metadata-plugin
     - dovecot-pop3d

@@ -1,6 +1,6 @@
 ---
 # FIXME: where does cron-deja-vu go?
-- name: ensure dependencies available through apt are installed
+- name: ensure postfix packages are installed
   apt: 
     pkg: "{{ item }}" 
     state: latest 
@@ -12,15 +12,15 @@
     - postfix-pcre
     - postfix-policyd-spf-python
 
-- name: update mailname from template
-  template:
-    src: etc/mailname
-    dest: /etc/mailname
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart postfix
+#- name: update mailname from template
+#  template:
+#    src: etc/mailname
+#    dest: /etc/mailname
+#    owner: root
+#    group: root
+#    mode: 0644
+#  notify:
+#    - restart postfix
 
 - name: update main.cf from template
   template:
