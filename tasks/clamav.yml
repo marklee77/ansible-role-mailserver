@@ -8,95 +8,41 @@
   with_items:
     - clamav-daemon
     - clamav-freshclam
-    - fuzzyocr
-    - libmail-dkim-perl
-    - pyzor
-    - razor
-    - spamass-milter
+    - clamav-milter
 
-- name: create spamd group for spamass-milter and spamd
-  group: 
-    name: spamd
-    state: present
-  
-- name: create spamd user to run spam assassin daemon
-  user:
-    name: spamd
-    group: spamd
-    home: /var/lib/spamassassin
-    shell: /bin/false
-    state: present
-
-- name: add spamass-milter user to spamd group
-  user:
-    name: spamass-milter
-    append: yes
-    groups: spamd
-    state: present
-
-- name: update /etc/default/spamassassin from template
+- name: update /etc/clamav/clamav-milter.conf from template
   template:
-    src: etc/default/spamassassin
-    dest: /etc/default/spamassassin
+    src: etc/clamav/clamav-milter.conf
+    dest: /etc/clamav/clamav-milter.conf
     owner: root
     group: root
     mode: 0644
   notify:
-    - restart spamassassin
+    - restart clamav
 
-- name: update /etc/default/spamassassin from template
-  template:
-    src: etc/default/spamassassin
-    dest: /etc/default/spamassassin
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart spamassassin
-
-- name: update init.pre from template
-  template:
-    src: etc/spamassassin/init.pre
-    dest: /etc/spamassassin/init.pre
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart spamassassin
-
-- name: update local.cf from template
-  template:
-    src: etc/spamassassin/local.cf
-    dest: /etc/spamassassin/local.cf
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart spamassassin
-
-- name: ensure /var/spool/postfix/spamass directory exists
+- name: ensure /var/spool/postfix/private/clamav directory exists
   file:
-    path: /var/spool/postfix/spamass
-    owner: spamd
-    group: spamd
+    path: /var/spool/postfix/private/clamav
+    owner: clamav
+    group: clamav
     mode: 0700
     state: directory
 
-- name: ensure postfix user is a member of spamd group
+- name: ensure postfix user is a member of clamav group
   user:
     name: postfix
     append: yes
-    groups: spamd
+    groups: clamav
     state: present
   notify:
     - restart postfix
 
-- name: ensure spamassassin services are started and enabled
+- name: ensure clamav services are started and enabled
   service:
     name: "{{ item }}"
     state: started
     enabled: yes
   with_items:
-    - spamassassin
-    - spamass-milter
+    - clamav-daemon
+    - clamav-milter
 

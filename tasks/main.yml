@@ -5,5 +5,5 @@
 - include: postfix.yml
 - include: sqlgrey.yml
 - include: opendkim.yml
-#- include: clamav.yml
+- include: clamav.yml
 #- include: spamassassin.yml

@@ -93,7 +93,6 @@ disable_vrfy_command = yes
 
 smtpd_helo_required = yes
 strict_rfc821_envelopes = yes
-#header_checks = regexp:/etc/postfix/header_checks
 
 policy-spf_time_limit = 3600s
 

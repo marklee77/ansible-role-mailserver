@@ -20,6 +20,14 @@
     pattern: /usr/sbin/sqlgrey
     state: restarted
 
+- name: restart clamav
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - clamav-daemon
+    - clamav-milter
+
 - name: restart spamassassin
   service:
     name: "{{ item }}"
