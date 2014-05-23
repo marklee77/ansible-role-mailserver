@@ -16,6 +16,8 @@ mydestination =
     localhost,
     localhost.$mydomain, 
     $myhostname,
+    {{ ansible_hostname }},
+    {{ ansible_fqdn }},
     {% for subdomain in postfix_subdomain_list -%}
     {{ subdomain }},
     {{ subdomain }}.$mydomain,
@@ -36,6 +38,9 @@ relay_domains = $mydestination
 # TLS parameters
 
 smtp_use_tls = yes
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+smtp_tls_cert_file = {{ postfix_ssl_cert_file }}
+smtp_tls_key_file = {{ postfix_ssl_key_file }}
 smtp_tls_security_level = may
 smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 
@@ -54,14 +59,12 @@ smtpd_tls_session_cache_timeout = 3600s
 
 # AUTHENTICATION
 
-smtpd_sasl_auth_enable = no # sasl auth only allowed on 587 submission service
+smtpd_sasl_auth_enable = no
 smtpd_sasl_authenticated_header = no
 smtpd_sasl_type = dovecot
 smtpd_sasl_path = private/dovecot-auth
 smtpd_sasl_local_domain = $myhostname
 smtpd_sasl_security_options = noanonymous
-
-broken_sasl_auth_clients = no # FIXME: find out what this does...
 
 # ADDRESS EXTENSIONS (e.g., user+foo)
 
