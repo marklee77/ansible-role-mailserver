@@ -12,11 +12,15 @@ myorigin = $mydomain
 
 proxy_interfaces = {{ postfix_proxy_interfaces }}
 
-mydestination = $myhostname, localhost.$mydomain, $mydomain,
+mydestination = 
+    localhost,
+    localhost.$mydomain, 
+    $myhostname, 
     {% for subdomain in postfix_subdomain_list %}
-        {{ subdomain }},
+    {{ subdomain }},
+    {{ subdomain }}.$mydomain,
     {% endfor %}
-    localhost 
+    $mydomain,
 
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
@@ -43,23 +47,21 @@ smtpd_tls_cert_file = {{ postfix_ssl_cert_file }}
 smtpd_tls_ciphers = high
 smtpd_tls_key_file = {{ postfix_ssl_key_file }}
 smtpd_tls_protocols = !SSLv2, !SSLv3
-sttpd_tls_received_header = yes
+smtpd_tls_received_header = yes
 smtpd_tls_security_level = may
 smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
 smtpd_tls_session_cache_timeout = 3600s
 
-tls_random_source = dev:/dev/urandom
-
 # AUTHENTICATION
 
-smtpd_sasl_auth_enable = yes
-smtpd_sasl_authenticated_header = yes
+smtpd_sasl_auth_enable = no # sasl auth only allowed on 587 submission service
+smtpd_sasl_authenticated_header = no
 smtpd_sasl_type = dovecot
 smtpd_sasl_path = private/dovecot-auth
 smtpd_sasl_local_domain = $myhostname
 smtpd_sasl_security_options = noanonymous
 
-broken_sasl_auth_clients = yes
+broken_sasl_auth_clients = no # FIXME: find out what this does...
 
 # ADDRESS EXTENSIONS (e.g., user+foo)
 
@@ -73,10 +75,10 @@ mailbox_command = /usr/lib/dovecot/deliver -c /etc/dovecot/dovecot.conf -m "${EX
 
 # JUNK MAIL CONTROLS
 
-smtpd_banner = $myhostname ESMTP $mail_name 
+smtpd_banner = $myhostname ESMTP
 readme_directory = no
 
-in_flow_delay = 10s
+in_flow_delay = 10s # FIXME: not sure about this one...
 
 disable_vrfy_command = yes
 
@@ -84,8 +86,9 @@ smtpd_helo_required = yes
 strict_rfc821_envelopes = yes
 #header_checks = regexp:/etc/postfix/header_checks
 
+policy-spf_time_limit = 3600s
+
 smtpd_client_restrictions = 
-    permit_sasl_authenticated,
     reject_unknown_client_hostname,
     {% for rbl in postfix_rbl_list %}
     reject_rbl_client {{ rbl }},
@@ -93,8 +96,7 @@ smtpd_client_restrictions =
     {% for rhsbl in postfix_rhsbl_list %}
     reject_rhsbl_client {{ rhsbl }},
     {% endfor -%}
-    check_policy_service unix:private/policy-spf,
-    check_policy_service inet:127.0.0.1:2525,     # greylist
+    check_policy_service inet:127.0.0.1:2525,     # greylist FIXME: socket?
     permit
 
 smtpd_helo_restrictions = 
@@ -112,13 +114,11 @@ smtpd_sender_restrictions =
     {% for rhsbl in postfix_rhsbl_list %}
     reject_rhsbl_sender {{ rhsbl }},
     {% endfor -%}
-    reject_sender_login_mismatch,
+    check_policy_service unix:private/policy-spf,
     permit
 
-policy-spf_time_limit = 3600s
-
 smtpd_recipient_restrictions = 
-    permit_mynetworks, 
+    permit_mynetworks,
     reject_non_fqdn_recipient,
     reject_unknown_recipient_domain,
     reject_unauth_destination, 
@@ -130,11 +130,7 @@ smtpd_data_restrictions = reject_unauth_pipelining, permit
 milter_default_action = accept
 milter_connect_macros = j {daemon_name} v {if_name} _
 
-smtpd_milters = unix:/spamass/spamass.sock unix:/clamav/clamav-milter.ctl unix:/opendkim/opendkim.sock
-non_smtpd_milters = $smtpd_milters
+#smtpd_milters = unix:opendkim/opendkim.sock unix:clamav/clamav.sock unix:spamass/spamass.sock 
+smtpd_milters = unix:opendkim/opendkim.sock
+non_smtpd_milters = unix:opendkim/opendkim.sock
 
-content_filter = smtp-amavis:[localhost]:10024
-
-unknown_address_reject_code = 554
-unknown_hostname_reject_code = 554
-unknown_client_reject_code = 554

@@ -1,4 +1,9 @@
 ---
+- name: restart dovecot
+  service:
+    name: dovecot
+    state: restarted
+
 - name: restart postfix
   service:
     name: postfix
@@ -12,8 +17,8 @@
 - name: restart gld
   service:
     name: gld
-    state: restarted
     pattern: /usr/sbin/gld
+    state: restarted
 
 - name: restart spamassassin
   service:
@@ -22,3 +27,4 @@
   with_items:
     - spamassassin
     - spamass-milter
+

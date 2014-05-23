@@ -6,4 +6,4 @@
 - include: opendkim.yml
 - include: gld.yml
 #- include: clamav.yml
-- include: spamassassin.yml
+#- include: spamassassin.yml

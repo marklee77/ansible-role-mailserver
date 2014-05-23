@@ -15,22 +15,20 @@
     - dovecot-sieve
     - dovecot-solr
 
-#- name: update gld.conf from template
-#  template:
-#    src: etc/gld.conf
-#    dest: /etc/gld.conf
-#    owner: root
-#    group: root
-#    mode: 0644
-#  notify:
-#    - restart gld
+- name: update dovecot.conf from template
+  template:
+    src: etc/dovecot/dovecot.conf
+    dest: /etc/dovecot/dovecot.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart dovecot
 
-#- name: ensure all dovecot services are started and enabled
-#  service:
-#    name: "{{ item }}"
-#    state: started
-#    enabled: yes
-#  with_items:
-#    - opendkim
-#    - postfix
-
+- name: ensure all dovecot services are started and enabled
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - dovecot

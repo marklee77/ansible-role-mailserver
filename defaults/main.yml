@@ -1,7 +1,6 @@
 ---
 postfix_root_mysql_password: "{{ lookup('password', inventory_dir + '/credentials/root-mysql-password') }}"
 postfix_gld_mysql_password: "{{ lookup('password', inventory_dir + '/credentials/gld-mysql-password') }}"
-postfix_mailname: mail.localdomain
 postfix_server_fqdn: mail.localdomain
 postfix_domain: localdomain
 postfix_proxy_interfaces: ""
@@ -19,5 +18,3 @@ postfix_rbl_list:
   - dnsbl.sorbs.net
 postfix_rhsbl_list:
   - rhsbl.sorbs.net
-
-
