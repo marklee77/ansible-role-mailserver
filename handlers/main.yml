@@ -14,10 +14,10 @@
     name: opendkim
     state: restarted
 
-- name: restart gld
+- name: restart postgrey
   service:
-    name: gld
-    pattern: /usr/sbin/gld
+    name: postgrey
+    pattern: /usr/sbin/postgrey
     state: restarted
 
 - name: restart spamassassin
