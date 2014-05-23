@@ -96,7 +96,7 @@ smtpd_client_restrictions =
     {% for rhsbl in postfix_rhsbl_list %}
     reject_rhsbl_client {{ rhsbl }},
     {% endfor -%}
-    check_policy_service inet:127.0.0.1:2525,     # greylist FIXME: socket?
+#    check_policy_service inet:127.0.0.1:2525,     # greylist FIXME: socket?
     permit
 
 smtpd_helo_restrictions = 
@@ -131,6 +131,6 @@ milter_default_action = accept
 milter_connect_macros = j {daemon_name} v {if_name} _
 
 #smtpd_milters = unix:opendkim/opendkim.sock unix:clamav/clamav.sock unix:spamass/spamass.sock 
-smtpd_milters = unix:opendkim/opendkim.sock
-non_smtpd_milters = unix:opendkim/opendkim.sock
+#smtpd_milters = unix:opendkim/opendkim.sock
+#non_smtpd_milters = unix:opendkim/opendkim.sock
 
