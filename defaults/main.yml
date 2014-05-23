@@ -1,20 +1,20 @@
 ---
-postfix_root_mysql_password: "{{ lookup('password', inventory_dir + '/credentials/root-mysql-password') }}"
-postfix_gld_mysql_password: "{{ lookup('password', inventory_dir + '/credentials/gld-mysql-password') }}"
-postfix_server_fqdn: mail.localdomain
-postfix_domain: localdomain
-postfix_proxy_interfaces: ""
-postfix_ssl_cert_file: /etc/ssl/certs/ssl-cert-snakeoil.pem
-postfix_ssl_key_file: /etc/ssl/private/ssl-cert-snakeoil.key
-postfix_subdomain_list:
+mailserver_root_mysql_password: "{{ lookup('password', inventory_dir + '/credentials/root-mysql-password') }}"
+mailserver_gld_mysql_password: "{{ lookup('password', inventory_dir + '/credentials/gld-mysql-password') }}"
+mailserver_fqdn: {{ ansible_fqdn }}
+mailserver_domain: {{ ansible_domain }}
+mailserver_subdomain_list:
   - www
   - ftp
   - mail
-postfix_rbl_list:
+mailserver_proxy_interfaces: ""
+mailserver_ssl_cert_file: /etc/ssl/certs/ssl-cert-snakeoil.pem
+mailserver_ssl_key_file: /etc/ssl/private/ssl-cert-snakeoil.key
+mailserver_rbl_list:
   - zen.spamhaus.org
   - bl.spamcop.net
   - cbl.abuseat.org
   - truncate.gbudb.net
   - dnsbl.sorbs.net
-postfix_rhsbl_list:
+mailserver_rhsbl_list:
   - rhsbl.sorbs.net
