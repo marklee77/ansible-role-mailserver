@@ -1,1 +1,1 @@
-*@{{ postfix_domain }} {{ postfix_server_fqdn }}
+*@{{ mailserver_domain }} {{ mailserver_fqdn }}

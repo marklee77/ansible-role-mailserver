@@ -58,7 +58,7 @@
     - restart opendkim
 
 - name: create domain key if it does not already exist
-  command: opendkim-genkey -r -h rsa-sha256 -s mail -D /etc/opendkim -d {{ postfix_server_fqdn }}
+  command: opendkim-genkey -r -h rsa-sha256 -s mail -D /etc/opendkim -d {{ mailserver_fqdn }}
            creates=/etc/opendkim/mail.private
   notify:
     - restart opendkim
