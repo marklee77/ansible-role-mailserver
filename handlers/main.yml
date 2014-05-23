@@ -14,10 +14,9 @@
     name: opendkim
     state: restarted
 
-- name: restart postgrey
+- name: restart sqlgrey
   service:
-    name: postgrey
-    pattern: /usr/sbin/postgrey
+    name: sqlgrey
     state: restarted
 
 - name: restart spamassassin
