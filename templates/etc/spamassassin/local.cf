@@ -94,3 +94,44 @@ ifplugin Mail::SpamAssassin::Plugin::Shortcircuit
 # shortcircuit BAYES_00                ham
 
 endif # Mail::SpamAssassin::Plugin::Shortcircuit
+
+# adjustments suggested by Spamassassin Tips
+score DNS_FROM_AHBL_RHSBL 0
+score __RFC_IGNORANT_ENVFROM    0
+score DNS_FROM_RFC_DSN          0
+score DNS_FROM_RFC_BOGUSMX      0
+score __DNS_FROM_RFC_POST       0
+score __DNS_FROM_RFC_ABUSE      0
+score __DNS_FROM_RFC_WHOIS      0
+
+## Spam sources
+header __RCVD_IN_MSPIKE          eval:check_rbl('mspike-lastexternal', 'bl.mailspike.net.')
+tflags __RCVD_IN_MSPIKE          net 
+
+
+##### Reputation compensations
+# Definitions
+header __RCVD_IN_MSPIKE_Z     eval:check_rbl_sub('mspike-lastexternal', '^127\.0\.0\.2$')
+describe __RCVD_IN_MSPIKE_Z   Spam wave participant
+tflags __RCVD_IN_MSPIKE_Z     net 
+header RCVD_IN_MSPIKE_L5     eval:check_rbl_sub('mspike-lastexternal', '^127\.0\.0\.10$')
+describe RCVD_IN_MSPIKE_L5   Very bad reputation (-5)
+tflags RCVD_IN_MSPIKE_L5     net 
+header RCVD_IN_MSPIKE_L4     eval:check_rbl_sub('mspike-lastexternal', '^127\.0\.0\.11$')
+describe RCVD_IN_MSPIKE_L4   Bad reputation (-4)
+tflags RCVD_IN_MSPIKE_L4     net 
+header RCVD_IN_MSPIKE_L3     eval:check_rbl_sub('mspike-lastexternal', '^127\.0\.0\.12$')
+describe RCVD_IN_MSPIKE_L3   Low reputation (-3)
+tflags RCVD_IN_MSPIKE_L3     net
+
+
+# *_L and *_Z may overlap each other, so account for that
+meta __RCVD_IN_MSPIKE_LOW RCVD_IN_MSPIKE_L5 || RCVD_IN_MSPIKE_L4 || RCVD_IN_MSPIKE_L3
+meta RCVD_IN_MSPIKE_ZBI __RCVD_IN_MSPIKE_Z && !__RCVD_IN_MSPIKE_LOW
+
+
+# Scores
+score RCVD_IN_MSPIKE_ZBI     4.1
+score RCVD_IN_MSPIKE_L5      4.1
+score RCVD_IN_MSPIKE_L4      3.5
+score RCVD_IN_MSPIKE_L3      2.9

@@ -8,13 +8,24 @@
   with_items:
     - cpanminus
     - fuzzyocr
+    - gcc
+    - libc6-dev
+    - libcrypt-ssleay-perl
+    - libdbi-perl
     - libencode-detect-perl
     - libgeo-ip-perl
+    - libhtml-format-perl
+    - libio-socket-inet6-perl
     - libio-socket-ip-perl
+    - libio-socket-ssl-perl
     - libmail-dkim-perl
+    - libmail-spf-perl
+    - libmailtools-perl
+    - libnet-ident-perl
     - libnet-patricia-perl
     - pyzor
     - razor
+    - re2c
     - sa-compile
     - spamass-milter
     - spamassassin

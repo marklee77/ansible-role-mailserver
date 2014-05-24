@@ -12,9 +12,7 @@ mailserver_ssl_cert_file: /etc/ssl/certs/ssl-cert-snakeoil.pem
 mailserver_ssl_key_file: /etc/ssl/private/ssl-cert-snakeoil.key
 mailserver_rbl_list:
   - zen.spamhaus.org
-  - bl.spamcop.net
-  - cbl.abuseat.org
-  - truncate.gbudb.net
+  - psbl.surriel.com
   - dnsbl.sorbs.net
 mailserver_rhsbl_list:
   - rhsbl.sorbs.net
