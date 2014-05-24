@@ -126,4 +126,5 @@ milter_default_action = accept
 milter_connect_macros = j {daemon_name} v {if_name} _
 
 smtpd_milters = unix:opendkim/opendkim.sock unix:clamav/clamav.sock
-non_smtpd_milters = unix:opendkim/opendkim.sock 
+non_smtpd_milters = unix:opendkim/opendkim.sock unix:clamav/clamav.sock
+#non_smtpd_milters = unix:opendkim/opendkim.sock 
