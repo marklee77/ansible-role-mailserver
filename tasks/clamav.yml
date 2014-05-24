@@ -37,6 +37,14 @@
   notify:
     - restart postfix
 
+- name: ensure clamav services are stopped
+  service:
+    name: "{{ item }}"
+    state: stopped
+  with_items:
+    - clamav-daemon
+    - clamav-milter
+
 - name: ensure clamav services are started and enabled
   service:
     name: "{{ item }}"

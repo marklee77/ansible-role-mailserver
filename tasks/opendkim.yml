@@ -76,7 +76,7 @@
     path: /var/spool/postfix/opendkim
     owner: opendkim
     group: opendkim
-    mode: 0700
+    mode: 0750
     state: directory
 
 - name: ensure postfix user is a member of opendkim group
