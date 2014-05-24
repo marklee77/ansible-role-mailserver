@@ -25,7 +25,7 @@
     path: /var/spool/postfix/clamav
     owner: clamav
     group: clamav
-    mode: 0700
+    mode: 0750
     state: directory
 
 - name: ensure postfix user is a member of clamav group

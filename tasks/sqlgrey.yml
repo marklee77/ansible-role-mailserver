@@ -45,7 +45,7 @@
     path: /var/spool/postfix/sqlgrey
     owner: sqlgrey
     group: sqlgrey
-    mode: 0700
+    mode: 0750
     state: directory
 
 - name: ensure postfix user is a member of sqlgrey group
