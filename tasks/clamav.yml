@@ -37,20 +37,12 @@
   notify:
     - restart postfix
 
-- name: ensure clamav services are stopped
-  service:
-    name: "{{ item }}"
-    state: stopped
-  with_items:
-    - clamav-daemon
-    - clamav-milter
-
 - name: ensure clamav services are started and enabled
   service:
-    name: "{{ item }}"
+    name: "{{ item.name }}"
+    pattern: "{{ item.pattern }}"
     state: started
     enabled: yes
   with_items:
-    - clamav-daemon
-    - clamav-milter
-
+    - { name: clamav-daemon, pattern: /usr/sbin/clamd }
+    - { name: clamav-milter, pattern: /usr/sbin/clamav-milter}
