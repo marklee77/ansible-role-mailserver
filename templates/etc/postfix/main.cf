@@ -98,7 +98,6 @@ policy-spf_time_limit = 3600s
 
 smtpd_recipient_restrictions = 
     permit_mynetworks,
-    permit_sasl_authenticated,
     reject_unauth_pipelining,
     reject_unknown_client_hostname,
     reject_invalid_helo_hostname, 
@@ -126,7 +125,6 @@ milter_default_action = accept
 milter_connect_macros = j {daemon_name} v {if_name} _
 
 smtpd_milters = unix:opendkim/opendkim.sock unix:clamav/clamav.sock unix:spamass/spamass.sock
-non_smtpd_milters = unix:opendkim/opendkim.sock unix:clamav/clamav.sock unix:spamass/spamass.sock
-#non_smtpd_milters = unix:opendkim/opendkim.sock 
+non_smtpd_milters = unix:opendkim/opendkim.sock 
 
 local_destination_concurrency_limit = 5

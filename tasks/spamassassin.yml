@@ -33,35 +33,6 @@
 #  command: razor-admin -home=/etc/spamassassin/.razor -discover
 #  changed_when: false
 
-#- name: create spam group for spamd, spamass-milter, and postfix
-#  group: 
-#    name: spam
-#    state: present
-  
-#- name: create spamd user to run spam assassin daemon
-#  user:
-#    name: spamd
-#    group: spam
-#    home: /var/lib/spamassassin
-#    shell: /bin/false
-#    state: present
-
-#- name: add spamass-milter user to spam group
-#  user:
-#    name: spamass-milter
-#    append: yes
-#    groups: spam
-#    state: present
-
-#- name: add postfix user to spam group
-#  user:
-#    name: postfix
-#    append: yes
-#    groups: spam
-#    state: present
-#  notify:
-#    - restart postfix
-
 - name: update /etc/default/spamassassin from template
   template:
     src: etc/default/spamassassin
@@ -102,14 +73,6 @@
   notify:
     - restart spamassassin
 
-#- name: ensure /var/spool/postfix/spamass directory exists
-#  file:
-#    path: /var/spool/postfix/spamass
-#    owner: spamass-milter
-#    group: spam
-#    mode: 0750
-#    state: directory
-
 - name: ensure spamassassin services are started and enabled
   service:
     name: "{{ item }}"
@@ -118,4 +81,3 @@
   with_items:
     - spamassassin
     - spamass-milter
-
