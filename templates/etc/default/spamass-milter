@@ -9,7 +9,7 @@
 
 # Default, use the spamass-milter user as the default user, ignore
 # messages from localhost
-OPTIONS="-u spamass-milter -i 127.0.0.1 -m -I"
+OPTIONS="-u spamass-milter -m -I"
 
 # Reject emails with spamassassin scores > 15.
 #OPTIONS="-r 15"
@@ -22,7 +22,7 @@ OPTIONS="-u spamass-milter -i 127.0.0.1 -m -I"
 # default. You can override them by uncommenting and changing them
 # here.
 ######################################
-SOCKET="/var/spool/postfix/spamass/spamass.sock"
-SOCKETOWNER="spamass-milter:spam"
-SOCKETMODE="0660"
+# SOCKET="/var/spool/postfix/spamass/spamass.sock"
+# SOCKETOWNER="postfix:postfix"
+# SOCKETMODE="0660"
 ######################################

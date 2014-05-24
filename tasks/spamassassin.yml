@@ -92,15 +92,15 @@
   notify:
     - restart spamassassin
 
-#- name: update /etc/default/spamass-milter from template
-#  template:
-#    src: etc/default/spamass-milter
-#    dest: /etc/default/spamass-milter
-#    owner: root
-#    group: root
-#    mode: 0644
-#  notify:
-#    - restart spamassassin
+- name: update /etc/default/spamass-milter from template
+  template:
+    src: etc/default/spamass-milter
+    dest: /etc/default/spamass-milter
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart spamassassin
 
 #- name: ensure /var/spool/postfix/spamass directory exists
 #  file:
