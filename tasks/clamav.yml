@@ -20,9 +20,9 @@
   notify:
     - restart clamav
 
-- name: ensure /var/spool/postfix/private/clamav directory exists
+- name: ensure /var/spool/postfix/clamav directory exists
   file:
-    path: /var/spool/postfix/private/clamav
+    path: /var/spool/postfix/clamav
     owner: clamav
     group: clamav
     mode: 0700

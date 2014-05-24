@@ -40,9 +40,9 @@
   notify:
     - restart sqlgrey
 
-- name: ensure /var/spool/postfix/private/sqlgrey directory exists
+- name: ensure /var/spool/postfix/sqlgrey directory exists
   file:
-    path: /var/spool/postfix/private/sqlgrey
+    path: /var/spool/postfix/sqlgrey
     owner: sqlgrey
     group: sqlgrey
     mode: 0700

@@ -119,7 +119,7 @@ smtpd_recipient_restrictions =
     reject_rhsbl_sender {{ rhsbl }},
     {% endfor -%}
     check_policy_service unix:private/policy-spf,
-    check_policy_service unix:private/sqlgrey/sqlgrey.sock,
+    check_policy_service unix:sqlgrey/sqlgrey.sock,
     permit
 
 milter_default_action = accept
