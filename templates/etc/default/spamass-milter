@@ -23,6 +23,6 @@ OPTIONS="-u spamass-milter -i 127.0.0.1 -m -I"
 # here.
 ######################################
 SOCKET="/var/spool/postfix/spamass/spamass.sock"
-SOCKETOWNER="spamd:spamd"
+SOCKETOWNER="spamass-milter:spam"
 SOCKETMODE="0660"
 ######################################

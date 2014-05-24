@@ -20,14 +20,20 @@
     pattern: /usr/sbin/sqlgrey
     state: restarted
 
+#- name: restart clamav
+#  service:
+#    name: "{{ item.name }}"
+#    pattern: "{{ item.pattern }}"  
+#    state: restarted
+#  with_items:
+#    - { name: clamav-daemon, pattern: /usr/sbin/clamd }
+#    - { name: clamav-milter, pattern: /usr/sbin/clamav-milter}
+
 - name: restart clamav
-  service:
-    name: "{{ item.name }}"
-    pattern: "{{ item.pattern }}"  
-    state: restarted
+  command: service {{ item }} restart
   with_items:
-    - { name: clamav-daemon, pattern: /usr/sbin/clamd }
-    - { name: clamav-milter, pattern: /usr/sbin/clamav-milter}
+    - clamav-daemon
+    - clamav-milter
 
 - name: restart spamassassin
   service:

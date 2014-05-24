@@ -6,4 +6,4 @@
 - include: sqlgrey.yml
 - include: opendkim.yml
 - include: clamav.yml
-#- include: spamassassin.yml
+- include: spamassassin.yml

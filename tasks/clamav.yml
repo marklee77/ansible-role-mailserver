@@ -37,6 +37,10 @@
   notify:
     - restart postfix
 
+- name: run freshclam to update database
+  command: freshclam --no-warnings --quiet
+  changed_when: false
+
 - name: ensure clamav services are started and enabled
   service:
     name: "{{ item.name }}"

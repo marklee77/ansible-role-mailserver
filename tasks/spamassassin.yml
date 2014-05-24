@@ -6,43 +6,61 @@
     update_cache: yes 
     cache_valid_time: 600
   with_items:
-    - clamav-daemon
-    - clamav-freshclam
+    - crm114
     - fuzzyocr
     - libmail-dkim-perl
     - pyzor
     - razor
+    - sa-compile
     - spamass-milter
+    - spamassassin
+    - spamassassin-heatu
+    - spamassassin-rules-ja
 
-- name: create spamd group for spamass-milter and spamd
-  group: 
-    name: spamd
-    state: present
+- name: run pyzor discover...
+  command: pyzor discover
+  changed_when: false
+
+#- name: run razor-admin register...
+#  command: razor-admin -home=/etc/spamassassin/.razor -register
+#  changed_when: false
+
+#- name: run razor-admin create...
+#  command: razor-admin -home=/etc/spamassassin/.razor -create
+#  changed_when: false
+
+#- name: run razor-admin discover...
+#  command: razor-admin -home=/etc/spamassassin/.razor -discover
+#  changed_when: false
+
+#- name: create spam group for spamd, spamass-milter, and postfix
+#  group: 
+#    name: spam
+#    state: present
   
-- name: create spamd user to run spam assassin daemon
-  user:
-    name: spamd
-    group: spamd
-    home: /var/lib/spamassassin
-    shell: /bin/false
-    state: present
+#- name: create spamd user to run spam assassin daemon
+#  user:
+#    name: spamd
+#    group: spam
+#    home: /var/lib/spamassassin
+#    shell: /bin/false
+#    state: present
 
-- name: add spamass-milter user to spamd group
-  user:
-    name: spamass-milter
-    append: yes
-    groups: spamd
-    state: present
+#- name: add spamass-milter user to spam group
+#  user:
+#    name: spamass-milter
+#    append: yes
+#    groups: spam
+#    state: present
 
-- name: update /etc/default/spamassassin from template
-  template:
-    src: etc/default/spamassassin
-    dest: /etc/default/spamassassin
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart spamassassin
+#- name: add postfix user to spam group
+#  user:
+#    name: postfix
+#    append: yes
+#    groups: spam
+#    state: present
+#  notify:
+#    - restart postfix
 
 - name: update /etc/default/spamassassin from template
   template:
@@ -74,22 +92,23 @@
   notify:
     - restart spamassassin
 
-- name: ensure /var/spool/postfix/spamd directory exists
-  file:
-    path: /var/spool/postfix/spamd
-    owner: spamd
-    group: spamd
-    mode: 0700
-    state: directory
+#- name: update /etc/default/spamass-milter from template
+#  template:
+#    src: etc/default/spamass-milter
+#    dest: /etc/default/spamass-milter
+#    owner: root
+#    group: root
+#    mode: 0644
+#  notify:
+#    - restart spamassassin
 
-- name: ensure postfix user is a member of spamd group
-  user:
-    name: postfix
-    append: yes
-    groups: spamd
-    state: present
-  notify:
-    - restart postfix
+#- name: ensure /var/spool/postfix/spamass directory exists
+#  file:
+#    path: /var/spool/postfix/spamass
+#    owner: spamass-milter
+#    group: spam
+#    mode: 0750
+#    state: directory
 
 - name: ensure spamassassin services are started and enabled
   service:
