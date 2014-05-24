@@ -38,30 +38,30 @@ pyzor_options --homedir /var/lib/spamassassin/.pyzor
 
 #   Set file-locking method (flock is not safe over NFS, but is faster)
 #
-# lock_method flock
+lock_method flock
 
 
 #   Set the threshold at which a message is considered spam (default: 5.0)
 #
-# required_score 5.0
+required_score 5.0
 
 
 #   Use Bayesian classifier (default: 1)
 #
-# use_bayes 1
+use_bayes 1
 
 
 #   Bayesian classifier auto-learning (default: 1)
 #
-# bayes_auto_learn 1
+bayes_auto_learn 1
 
 
 #   Set headers which may provide inappropriate cues to the Bayesian
 #   classifier
 #
-# bayes_ignore_header X-Bogosity
-# bayes_ignore_header X-Spam-Flag
-# bayes_ignore_header X-Spam-Status
+bayes_ignore_header X-Bogosity
+bayes_ignore_header X-Spam-Flag
+bayes_ignore_header X-Spam-Status
 
 
 #   Some shortcircuiting, if the plugin is enabled

@@ -54,6 +54,7 @@
 
 - name: rehash aliases
   command: newaliases
+  changed_when: false
   notify:
     - restart postfix
 

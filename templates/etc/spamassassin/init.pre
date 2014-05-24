@@ -19,7 +19,7 @@
 #
 # Note: This requires the Geo::IP Perl module
 #
-# loadplugin Mail::SpamAssassin::Plugin::RelayCountry
+loadplugin Mail::SpamAssassin::Plugin::RelayCountry
 
 # URIDNSBL - look up URLs found in the message against several DNS
 # blocklists.
