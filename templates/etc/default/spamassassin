@@ -4,7 +4,7 @@ SASITECONFIGPATH="/etc/spamassassin"
 # Change to one to enable spamd
 ENABLED=1
 
-OPTIONS="-x --max-children=5 --helper-home-dir=${SAHOME} --siteconfigpath=${SASITECONFIGPATH}"
+OPTIONS="-u debian-spamd -g debian-spamd -x --max-children=5 --helper-home-dir=${SAHOME} --siteconfigpath=${SASITECONFIGPATH}"
 
 # Pid file
 # Where should spamd write its PID to file? If you use the -u or

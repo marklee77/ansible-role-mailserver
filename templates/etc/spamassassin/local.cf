@@ -12,11 +12,11 @@ bayes_path /var/lib/spamassassin/.spamassassin/bayes
 bayes_file_mode 0777
  
 ## Ensure non-English e-mails are treated as spam
-#ok_languages en
-#ok_locales en
+ok_languages all
+ok_locales all
  
 ## Set Pyzor & Razor config file paths
-razor_config /var/lib/spamassassin/.razor/razor-agent.conf
+#razor_config /var/lib/spamassassin/.razor/razor-agent.conf
 pyzor_options --homedir /var/lib/spamassassin/.pyzor
 
 #   Add *****SPAM***** to the Subject header of spam e-mails
