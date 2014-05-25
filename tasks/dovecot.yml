@@ -14,7 +14,6 @@
     - dovecot-metadata-plugin
     - dovecot-pop3d
     - dovecot-sieve
-    - dovecot-solr
 
 - name: update dovecot.conf from template
   template:

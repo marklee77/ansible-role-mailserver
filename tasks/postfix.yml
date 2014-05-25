@@ -1,5 +1,4 @@
 ---
-# FIXME: where does cron-deja-vu go?
 - name: ensure postfix packages are installed
   apt: 
     pkg: "{{ item }}" 
@@ -7,7 +6,7 @@
     update_cache: yes 
     cache_valid_time: 600
   with_items:
-    - cron-deja-vu
+    - mailutils
     - postfix
     - postfix-pcre
     - postfix-policyd-spf-python

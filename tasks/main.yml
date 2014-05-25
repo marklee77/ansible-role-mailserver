@@ -1,6 +1,4 @@
 ---
-- include: upgrade.yml
-- include: mysql.yml
 - include: dovecot.yml
 - include: postfix.yml
 - include: sqlgrey.yml
