@@ -1,0 +1,150 @@
+---
+- name: ensure dependencies available through apt are installed
+  apt: 
+    pkg: "{{ item }}" 
+    state: latest 
+    update_cache: yes 
+    cache_valid_time: 600
+  with_items:
+    - cpanminus
+    - dspam
+    - fuzzyocr
+    - gcc
+    - libc6-dev
+    - libcrypt-ssleay-perl
+    - libdbi-perl
+    - libencode-detect-perl
+    - libgeo-ip-perl
+    - libhtml-format-perl
+    - libio-socket-inet6-perl
+    - libio-socket-ip-perl
+    - libio-socket-ssl-perl
+    - libmail-dkim-perl
+    - libmail-spf-perl
+    - libmailtools-perl
+    - libnet-ident-perl
+    - libnet-patricia-perl
+    - pyzor
+    - razor
+    - re2c
+    - sa-compile
+    - spamass-milter
+    - spamassassin
+    - spamassassin-heatu
+    - spamassassin-rules-ja
+
+- name: ensure Digest::SHA1 is installed from cpan (not included in Ubuntu)
+  command: cpanm -i "Digest::SHA1"
+  register: cpanm_result
+  changed_when: not cpanm_result.stdout.startswith("Digest::SHA1 is up to date")
+
+- name: run pyzor discover...
+  sudo_user: debian-spamd
+  command: pyzor discover
+  changed_when: false
+  notify:
+    - restart spamassassin
+
+- name: make sure razor home exists
+  file:
+    path: /var/lib/spamassassin/.razor
+    owner: debian-spamd
+    group: debian-spamd
+    mode: 0700
+    state: directory
+
+- name: run razor-admin register...
+  sudo_user: debian-spamd
+  command: razor-admin -home=/var/lib/spamassassin/.razor -register
+  changed_when: false
+  notify:
+    - restart spamassassin
+
+- name: run razor-admin create...
+  sudo_user: debian-spamd
+  command: razor-admin -home=/var/lib/spamassassin/.razor -create
+  changed_when: false
+  notify:
+    - restart spamassassin
+
+- name: run razor-admin discover...
+  sudo_user: debian-spamd
+  command: razor-admin -home=/var/lib/spamassassin/.razor -discover
+  changed_when: false
+  notify:
+    - restart spamassassin
+
+- name: install Mail::SpamAssassin::Plugin::dspam from github
+  get_url:
+    url: https://raw.githubusercontent.com/elubow/dspam-spamassassin/master/dspam.pm
+    dest: /usr/share/perl5/Mail/SpamAssassin/Plugin/
+
+- name: make sure plugin has correct permissions
+  file:
+    path: /usr/share/perl5/Mail/SpamAssassin/Plugin/dspam.pm
+    owner: root
+    group: root
+    mode: 0644
+    state: file
+
+- name: install configuration file for SpamAssassin dspam plugin
+  get_url:
+    url: https://raw.githubusercontent.com/elubow/dspam-spamassassin/master/dspam.cf
+    dest: /etc/spamassassin/
+
+- name: make sure dspam.cf configuration file has correct permissions
+  file:
+    path: /etc/spamassassin/dspam.cf
+    owner: root
+    group: root
+    mode: 0644
+    state: file
+
+- name: update /etc/default/spamassassin from template
+  template:
+    src: etc/default/spamassassin
+    dest: /etc/default/spamassassin
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart spamassassin
+
+- name: update init.pre from template
+  template:
+    src: etc/spamassassin/init.pre
+    dest: /etc/spamassassin/init.pre
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart spamassassin
+
+- name: update local.cf from template
+  template:
+    src: etc/spamassassin/local.cf
+    dest: /etc/spamassassin/local.cf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart spamassassin
+
+- name: update /etc/default/spamass-milter from template
+  template:
+    src: etc/default/spamass-milter
+    dest: /etc/default/spamass-milter
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart spamassassin
+
+- name: ensure spamassassin services are started and enabled
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - spamassassin
+    - spamass-milter
