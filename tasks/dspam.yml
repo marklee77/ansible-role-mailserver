@@ -8,6 +8,13 @@
   with_items:
     - dspam
     - libdspam7-drv-mysql
+    - python-milter
+    - python-pip
+
+- name: install dspam milter package using pip (not in Ubuntu)
+  pip:
+    name: dspam-milter
+    state: present
 
 - name: ensure dspam database is present
   mysql_db:
@@ -43,6 +50,16 @@
   template:
     src: etc/default/dspam
     dest: /etc/default/dspam
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart dspam
+
+- name: update /etc/init/dspam.conf from template
+  template:
+    src: etc/init/dspam.conf
+    dest: /etc/init/dspam.conf
     owner: root
     group: root
     mode: 0644
