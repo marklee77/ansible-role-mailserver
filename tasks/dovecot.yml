@@ -25,6 +25,24 @@
   notify:
     - restart dovecot
 
+- name: ensure /etc/skel/.sieve.d exists
+  file:
+    path: /etc/skel/.sieve.d
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
+- name: update /etc/skel/.sieve.d/default from template
+  template:
+    src: etc/skel/.sieve.d/default.sieve
+    dest: /etc/skel/.sieve.d/default.sieve
+    owner: root
+    group: root
+    mode: 0644
+
+# FIXME: auto-symlink to .dovecote.sieve?
+
 - name: ensure all dovecot services are started and enabled
   service:
     name: "{{ item }}"
