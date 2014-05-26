@@ -35,6 +35,13 @@
     - clamav-daemon
     - clamav-milter
 
+- name: restart dspam
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - dspam
+
 - name: restart spamassassin
   service:
     name: "{{ item }}"

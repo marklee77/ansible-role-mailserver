@@ -7,7 +7,6 @@
     cache_valid_time: 600
   with_items:
     - cpanminus
-    - dspam
     - fuzzyocr
     - gcc
     - libc6-dev

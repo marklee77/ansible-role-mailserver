@@ -36,3 +36,6 @@ loadplugin Mail::SpamAssassin::Plugin::SPF
 
 ## Add TextCat to assist enable language-based filtering
 loadplugin Mail::SpamAssassin::Plugin::TextCat
+
+## Add DSPAM bayes filtering plugin
+loadplugin Mail::SpamAssassin::Plugin::dspam

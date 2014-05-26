@@ -95,9 +95,8 @@ ifplugin Mail::SpamAssassin::Plugin::Shortcircuit
 
 endif # Mail::SpamAssassin::Plugin::Shortcircuit
 
-ifplugin Mail::SpamAssassin::Plugin::dspam
+# include configuration for dspam plugin
 include dspam.cf
-endif
 
 # adjustments suggested by Spamassassin Tips
 score DNS_FROM_AHBL_RHSBL 0
