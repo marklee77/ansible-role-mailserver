@@ -85,14 +85,19 @@ mailbox_transport = lmtp:unix:private/dovecot-lmtp
 # JUNK MAIL CONTROLS
 
 smtpd_banner = $myhostname ESMTP
-readme_directory = no
-
-in_flow_delay = 1s 
-
-disable_vrfy_command = yes
-
 smtpd_helo_required = yes
+readme_directory = no
+in_flow_delay = 1s 
+disable_vrfy_command = yes
 strict_rfc821_envelopes = yes
+
+postscreen_greet_action = enforce
+postscreen_dnsbl_action = enforce
+postscreen_access_list = permit_mynetworks
+postscreen_dnsbl_sites = 
+    {% for rbl in mailserver_rbl_list -%}
+    {{ rbl }},
+    {% endfor -%}
 
 policy-spf_time_limit = 3600s
 
@@ -114,7 +119,6 @@ smtpd_recipient_restrictions =
     {% endfor -%}
     {% for rhsbl in mailserver_rhsbl_list -%}
     reject_rhsbl_client {{ rhsbl }},
-    reject_rhsbl_helo_hostname {{ rhsbl }},
     reject_rhsbl_sender {{ rhsbl }},
     {% endfor -%}
     check_policy_service unix:private/policy-spf,

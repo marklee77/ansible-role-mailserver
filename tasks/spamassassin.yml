@@ -7,6 +7,7 @@
     cache_valid_time: 600
   with_items:
     - cpanminus
+    - dspam
     - fuzzyocr
     - gcc
     - libc6-dev
@@ -54,24 +55,50 @@
 
 - name: run razor-admin register...
   sudo_user: debian-spamd
-  command: razor-admin -register
+  command: razor-admin -home=/var/lib/spamassassin/.razor -register
   changed_when: false
   notify:
     - restart spamassassin
 
 - name: run razor-admin create...
   sudo_user: debian-spamd
-  command: razor-admin -create
+  command: razor-admin -home=/var/lib/spamassassin/.razor -create
   changed_when: false
   notify:
     - restart spamassassin
 
 - name: run razor-admin discover...
   sudo_user: debian-spamd
-  command: razor-admin -discover
+  command: razor-admin -home=/var/lib/spamassassin/.razor -discover
   changed_when: false
   notify:
     - restart spamassassin
+
+- name: install Mail::SpamAssassin::Plugin::dspam from github
+  get_url:
+    url: https://raw.githubusercontent.com/elubow/dspam-spamassassin/master/dspam.pm
+    dest: /usr/share/perl5/Mail/SpamAssassin/Plugin/
+
+- name: make sure plugin has correct permissions
+  file:
+    path: /usr/share/perl5/Mail/SpamAssassin/Plugin/dspam.pm
+    owner: root
+    group: root
+    mode: 0644
+    state: file
+
+- name: install configuration file for SpamAssassin dspam plugin
+  get_url:
+    url: https://raw.githubusercontent.com/elubow/dspam-spamassassin/master/dspam.cf
+    dest: /etc/spamassassin/
+
+- name: make sure dspam.cf configuration file has correct permissions
+  file:
+    path: /etc/spamassassin/dspam.cf
+    owner: root
+    group: root
+    mode: 0644
+    state: file
 
 - name: update /etc/default/spamassassin from template
   template:

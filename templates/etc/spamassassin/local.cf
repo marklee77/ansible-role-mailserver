@@ -16,7 +16,7 @@ ok_languages all
 ok_locales all
  
 ## Set Pyzor & Razor config file paths
-#razor_config /var/lib/spamassassin/.razor/razor-agent.conf
+razor_config /var/lib/spamassassin/.razor/razor-agent.conf
 pyzor_options --homedir /var/lib/spamassassin/.pyzor
 
 #   Add *****SPAM***** to the Subject header of spam e-mails
@@ -95,6 +95,10 @@ ifplugin Mail::SpamAssassin::Plugin::Shortcircuit
 
 endif # Mail::SpamAssassin::Plugin::Shortcircuit
 
+ifplugin Mail::SpamAssassin::Plugin::dspam
+include dspam.cf
+endif
+
 # adjustments suggested by Spamassassin Tips
 score DNS_FROM_AHBL_RHSBL 0
 score __RFC_IGNORANT_ENVFROM    0
@@ -107,7 +111,6 @@ score __DNS_FROM_RFC_WHOIS      0
 ## Spam sources
 header __RCVD_IN_MSPIKE          eval:check_rbl('mspike-lastexternal', 'bl.mailspike.net.')
 tflags __RCVD_IN_MSPIKE          net 
-
 
 ##### Reputation compensations
 # Definitions
@@ -124,11 +127,9 @@ header RCVD_IN_MSPIKE_L3     eval:check_rbl_sub('mspike-lastexternal', '^127\.0\
 describe RCVD_IN_MSPIKE_L3   Low reputation (-3)
 tflags RCVD_IN_MSPIKE_L3     net
 
-
 # *_L and *_Z may overlap each other, so account for that
 meta __RCVD_IN_MSPIKE_LOW RCVD_IN_MSPIKE_L5 || RCVD_IN_MSPIKE_L4 || RCVD_IN_MSPIKE_L3
 meta RCVD_IN_MSPIKE_ZBI __RCVD_IN_MSPIKE_Z && !__RCVD_IN_MSPIKE_LOW
-
 
 # Scores
 score RCVD_IN_MSPIKE_ZBI     4.1
