@@ -9,26 +9,18 @@
     name: postfix
     state: restarted
 
-- name: restart opendkim
-  service:
-    name: opendkim
-    state: restarted
-
 - name: restart sqlgrey
   service:
     name: sqlgrey
     pattern: /usr/sbin/sqlgrey
     state: restarted
 
-#- name: restart clamav
-#  service:
-#    name: "{{ item.name }}"
-#    pattern: "{{ item.pattern }}"  
-#    state: restarted
-#  with_items:
-#    - { name: clamav-daemon, pattern: /usr/sbin/clamd }
-#    - { name: clamav-milter, pattern: /usr/sbin/clamav-milter}
+- name: restart opendkim
+  service:
+    name: opendkim
+    state: restarted
 
+# ansible service module doesn't seem to work correctly with clamav
 - name: restart clamav
   command: service {{ item }} restart
   with_items:
@@ -41,6 +33,7 @@
     state: restarted
   with_items:
     - dspam
+    - dspam-milter
 
 - name: restart spamassassin
   service:

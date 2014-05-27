@@ -2,6 +2,7 @@
 mailserver_root_mysql_password: "{{ lookup('password', inventory_dir + '/private/credentials/root-mysql-password') }}"
 mailserver_sqlgrey_mysql_password: "{{ lookup('password', inventory_dir + '/private/credentials/sqlgrey-mysql-password') }}"
 mailserver_dspam_mysql_password: "{{ lookup('password', inventory_dir + '/private/credentials/dspam-mysql-password') }}"
+
 mailserver_domain: localdomain
 mailserver_fqdn: localhost.localdomain
 mailserver_subdomain_list:

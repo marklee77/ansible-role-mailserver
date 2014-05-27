@@ -1,6 +1,6 @@
 # Variables for dspam.
 #
-# Do not start dspam.
+# Start dspam.
 START=yes
 
 # User that runs dspam.

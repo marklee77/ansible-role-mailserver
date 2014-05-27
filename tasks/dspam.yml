@@ -11,11 +11,6 @@
     - python-milter
     - python-pip
 
-- name: install dspam milter package using pip (not in Ubuntu)
-  pip:
-    name: dspam-milter
-    state: present
-
 - name: ensure dspam database is present
   mysql_db:
     name: dspam
@@ -29,6 +24,16 @@
   with_items:
     - "%"
     - localhost
+
+- name: update /etc/default/dspam from template
+  template:
+    src: etc/default/dspam
+    dest: /etc/default/dspam
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart dspam
 
 - name: copy .my.cnf file with dspam password credentials
   template:
@@ -45,26 +50,6 @@
 - name: create dspam mysql virtual users tables
   shell: mysql --user=dspam --password="{{ mailserver_dspam_mysql_password }}" dspam < /usr/share/doc/libdspam7-drv-mysql/sql/virtual_users.sql && touch /etc/dspam/.mysql_virtual_users
          creates=/etc/dspam/.mysql_virtual_users
-
-- name: update /etc/default/dspam from template
-  template:
-    src: etc/default/dspam
-    dest: /etc/default/dspam
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart dspam
-
-- name: update /etc/init/dspam.conf from template
-  template:
-    src: etc/init/dspam.conf
-    dest: /etc/init/dspam.conf
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart dspam
 
 - name: update /etc/dspam/dspam.conf from template
   template:
@@ -96,6 +81,44 @@
   notify:
     - restart dspam
 
+- name: ensure dspam-milter group exists
+  group:
+    name: dspam-milter
+    state: present
+
+- name: ensure dspam-milter user exists
+  user:
+    name: dspam-milter
+    group: dspam-milter
+    home: /
+    shell: /bin/false
+    state: present
+
+- name: install dspam milter package using pip (not included in Ubuntu)
+  pip:
+    name: dspam-milter
+    state: present
+
+- name: update /etc/init/dspam-milter.conf from template
+  template:
+    src: etc/init/dspam-milter.conf
+    dest: /etc/init/dspam-milter.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart dspam
+
+- name: update /etc/dspam/dspam-milter.conf from template
+  template:
+    src: etc/dspam/dspam-milter.conf
+    dest: /etc/dspam/dspam-milter.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart dspam
+
 - name: ensure dspam services are started and enabled
   service:
     name: "{{ item }}"
@@ -103,4 +126,5 @@
     enabled: yes
   with_items:
     - dspam
+    - dspam-milter
 
