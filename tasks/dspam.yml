@@ -86,6 +86,12 @@
     shell: /bin/false
     state: present
 
+- name: ensure postfix user is a member of dspam-milter group
+  user:
+    name: postfix
+    groups: dspam-milter
+    append: yes
+
 - name: install dspam milter package using pip (not included in Ubuntu)
   pip:
     name: dspam-milter
@@ -111,7 +117,13 @@
   notify:
     - restart dspam
 
-# FIXME: create socket directory, add postfix to dspam group...
+- name: make dspam-milter socket directory exists
+  file:
+    path: /var/spool/postfix/dspam
+    owner: debian-spamd
+    group: debian-spamd
+    mode: 0770
+    state: directory
 
 - name: ensure dspam services are started and enabled
   service:
