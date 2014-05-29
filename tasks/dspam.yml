@@ -55,9 +55,9 @@
   template:
     src: etc/dspam/dspam.conf
     dest: /etc/dspam/dspam.conf
-    owner: root
-    group: root
-    mode: 0644
+    owner: dspam
+    group: dspam
+    mode: 0660
   notify:
     - restart dspam
 
@@ -65,18 +65,8 @@
   template:
     src: etc/dspam/default.prefs
     dest: /etc/dspam/default.prefs
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart dspam
-
-- name: update /etc/dspam/dspam.d/mysql.conf from template
-  template:
-    src: etc/dspam/dspam.d/mysql.conf
-    dest: /etc/dspam/dspam.d/mysql.conf
-    owner: root
-    group: root
+    owner: dspam
+    group: dspam
     mode: 0644
   notify:
     - restart dspam
@@ -86,10 +76,12 @@
     name: dspam-milter
     state: present
 
-- name: ensure dspam-milter user exists
+- name: ensure dspam-milter user exists and is in dspam group
   user:
     name: dspam-milter
     group: dspam-milter
+    groups: dspam
+    append: yes
     home: /
     shell: /bin/false
     state: present
