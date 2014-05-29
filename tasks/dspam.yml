@@ -111,6 +111,8 @@
   notify:
     - restart dspam
 
+# FIXME: create socket directory, add postfix to dspam group...
+
 - name: ensure dspam services are started and enabled
   service:
     name: "{{ item }}"
