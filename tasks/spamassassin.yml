@@ -1,5 +1,5 @@
 ---
-- name: ensure dependencies available through apt are installed
+- name: ensure spamassassin packages are installed
   apt: 
     pkg: "{{ item }}" 
     state: latest 
@@ -9,6 +9,9 @@
     - cpanminus
     - fuzzyocr
     - gcc
+    - gifsicle
+    - gocr
+    - imagemagick
     - libc6-dev
     - libcrypt-ssleay-perl
     - libdbi-perl
@@ -21,8 +24,13 @@
     - libmail-dkim-perl
     - libmail-spf-perl
     - libmailtools-perl
+    - libmldbm-sync-perl
     - libnet-ident-perl
     - libnet-patricia-perl
+    - libstring-approx-perl
+    - libungif-bin
+    - netpbm
+    - ocrad
     - pyzor
     - razor
     - re2c
@@ -31,6 +39,37 @@
     - spamassassin
     - spamassassin-heatu
     - spamassassin-rules-ja
+    - tesseract-ocr
+
+- name: update /etc/default/spamassassin from template
+  template:
+    src: etc/default/spamassassin
+    dest: /etc/default/spamassassin
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart spamassassin
+
+- name: update init.pre from template
+  template:
+    src: etc/spamassassin/init.pre
+    dest: /etc/spamassassin/init.pre
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart spamassassin
+
+- name: update local.cf from template
+  template:
+    src: etc/spamassassin/local.cf
+    dest: /etc/spamassassin/local.cf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart spamassassin
 
 - name: ensure Digest::SHA1 is installed from cpan (not included in Ubuntu)
   command: cpanm -i "Digest::SHA1"
@@ -99,33 +138,38 @@
     mode: 0644
     state: file
 
-- name: update /etc/default/spamassassin from template
+- name: update FuzzyOcr.cf from template
   template:
-    src: etc/default/spamassassin
-    dest: /etc/default/spamassassin
+    src: etc/spamassassin/FuzzyOcr.cf
+    dest: /etc/spamassassin/FuzzyOcr.cf
     owner: root
     group: root
     mode: 0644
   notify:
     - restart spamassassin
 
-- name: update init.pre from template
-  template:
-    src: etc/spamassassin/init.pre
-    dest: /etc/spamassassin/init.pre
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart spamassassin
+- name: download gpg key for Sought ruleset
+  get_url:
+    url: http://yerp.org/rules/GPG.KEY
+    dest: /tmp/GPG.KEY
+    force: yes
 
-- name: update local.cf from template
+- name: import gpg key for Sought ruleset
+  sudo_user: debian-spamd
+  command: sa-update --gpghomedir /var/lib/spamassassin/sa-update-keys--import /tmp/GPG.KEY
+  ignore_errors: true
+
+- name: update /etc/cron.daily/spamassassin-sought from template
   template:
-    src: etc/spamassassin/local.cf
-    dest: /etc/spamassassin/local.cf
+    src: etc/cron.daily/spamassassin-sought
+    dest: /etc/cron.daily/spamassassin-sought
     owner: root
     group: root
-    mode: 0644
+    mode: 0755
+
+- name: update sought rules
+  command: sa-update --gpghomedir /var/lib/spamassassin/sa-update-keys --gpgkey 6C6191E3 --channel sought.rules.yerp.org
+  ignore_errors: true
   notify:
     - restart spamassassin
 
