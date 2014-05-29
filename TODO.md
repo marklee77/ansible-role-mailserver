@@ -1,0 +1,1 @@
+- make sure dspam is using innodb?
