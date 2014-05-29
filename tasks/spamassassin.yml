@@ -156,7 +156,7 @@
 
 - name: import gpg key for Sought ruleset
   sudo_user: debian-spamd
-  command: sa-update --gpghomedir /var/lib/spamassassin/sa-update-keys--import /tmp/GPG.KEY
+  command: sa-update --gpghomedir /var/lib/spamassassin/sa-update-keys --import /tmp/GPG.KEY
   ignore_errors: true
 
 - name: update /etc/cron.daily/spamassassin-sought from template
@@ -168,6 +168,7 @@
     mode: 0755
 
 - name: update sought rules
+  sudo_user: debian-spamd
   command: sa-update --gpghomedir /var/lib/spamassassin/sa-update-keys --gpgkey 6C6191E3 --channel sought.rules.yerp.org
   ignore_errors: true
   notify:
