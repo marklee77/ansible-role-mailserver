@@ -25,6 +25,14 @@
     - "%"
     - localhost
 
+- name: create dspam mysql objects tables
+  shell: mysql --user=dspam --password="{{ mailserver_dspam_mysql_password }}" dspam < /usr/share/doc/libdspam7-drv-mysql/sql/mysql_objects-4.1.sql && touch /etc/dspam/.mysql_objects
+         creates=/etc/dspam/.mysql_objects
+
+- name: create dspam mysql virtual users tables
+  shell: mysql --user=dspam --password="{{ mailserver_dspam_mysql_password }}" dspam < /usr/share/doc/libdspam7-drv-mysql/sql/virtual_users.sql && touch /etc/dspam/.mysql_virtual_users
+         creates=/etc/dspam/.mysql_virtual_users
+
 - name: update /etc/default/dspam from template
   template:
     src: etc/default/dspam
@@ -43,21 +51,13 @@
     group: dspam
     mode: 0600
 
-- name: create dspam mysql objects tables
-  shell: mysql --user=dspam --password="{{ mailserver_dspam_mysql_password }}" dspam < /usr/share/doc/libdspam7-drv-mysql/sql/mysql_objects-4.1.sql && touch /etc/dspam/.mysql_objects
-         creates=/etc/dspam/.mysql_objects
-
-- name: create dspam mysql virtual users tables
-  shell: mysql --user=dspam --password="{{ mailserver_dspam_mysql_password }}" dspam < /usr/share/doc/libdspam7-drv-mysql/sql/virtual_users.sql && touch /etc/dspam/.mysql_virtual_users
-         creates=/etc/dspam/.mysql_virtual_users
-
 - name: update /etc/dspam/dspam.conf from template
   template:
     src: etc/dspam/dspam.conf
     dest: /etc/dspam/dspam.conf
     owner: dspam
     group: dspam
-    mode: 0660
+    mode: 0600
   notify:
     - restart dspam
 
@@ -70,27 +70,6 @@
     mode: 0644
   notify:
     - restart dspam
-
-- name: ensure dspam-milter group exists
-  group:
-    name: dspam-milter
-    state: present
-
-- name: ensure dspam-milter user exists and is in dspam group
-  user:
-    name: dspam-milter
-    group: dspam-milter
-    groups: dspam
-    append: yes
-    home: /
-    shell: /bin/false
-    state: present
-
-- name: ensure postfix user is a member of dspam-milter group
-  user:
-    name: postfix
-    groups: dspam-milter
-    append: yes
 
 - name: install dspam milter package using pip (not included in Ubuntu)
   pip:
@@ -111,18 +90,18 @@
   template:
     src: etc/dspam/dspam-milter.conf
     dest: /etc/dspam/dspam-milter.conf
-    owner: root
-    group: root
-    mode: 0644
+    owner: postfix
+    group: postfix
+    mode: 0600
   notify:
     - restart dspam
 
 - name: make dspam-milter socket directory exists
   file:
     path: /var/spool/postfix/dspam
-    owner: debian-spamd
-    group: debian-spamd
-    mode: 0770
+    owner: postfix
+    group: postfix
+    mode: 0700
     state: directory
 
 - name: ensure dspam services are started and enabled
