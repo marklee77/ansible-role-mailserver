@@ -38,8 +38,9 @@
     - restart postfix
 
 - name: run freshclam to update database
-  command: freshclam --no-warnings --quiet
-  changed_when: false
+  command: freshclam --no-warnings
+  register: freshclam
+  changed_when: freshclam.stdout.find("updated") != -1
 
 - name: ensure clamav services are started and enabled
   service:

@@ -48,12 +48,11 @@
     owner: root
     group: root
     mode: 0644
-  notify:
-    - restart postfix
+  register: update_aliases
 
 - name: rehash aliases
   command: newaliases
-  changed_when: false
+  when: update_aliases|changed
   notify:
     - restart postfix
 

@@ -9,6 +9,7 @@
     - cpanminus
     - fuzzyocr
     - gcc
+    - giflib-tools
     - gifsicle
     - gocr
     - imagemagick
@@ -28,7 +29,6 @@
     - libnet-ident-perl
     - libnet-patricia-perl
     - libstring-approx-perl
-    - libungif-bin
     - netpbm
     - ocrad
     - pyzor
@@ -79,7 +79,7 @@
 - name: run pyzor discover...
   sudo_user: debian-spamd
   command: pyzor discover
-  changed_when: false
+           creates=/var/lib/spamassassin/.pyzor/servers
   notify:
     - restart spamassassin
 
@@ -91,24 +91,27 @@
     mode: 0700
     state: directory
 
-- name: run razor-admin register...
-  sudo_user: debian-spamd
-  command: razor-admin -home=/var/lib/spamassassin/.razor -register
-  changed_when: false
-  notify:
-    - restart spamassassin
-
 - name: run razor-admin create...
   sudo_user: debian-spamd
   command: razor-admin -home=/var/lib/spamassassin/.razor -create
-  changed_when: false
+           creates=/var/lib/spamassassin/.razor/razor-agent.conf
   notify:
     - restart spamassassin
 
-- name: run razor-admin discover...
+- name: run razor-admin register...
   sudo_user: debian-spamd
-  command: razor-admin -home=/var/lib/spamassassin/.razor -discover
-  changed_when: false
+  command: razor-admin -home=/var/lib/spamassassin/.razor -register
+           creates=/var/lib/spamassassin/.razor/identity
+  notify:
+    - restart spamassassin
+
+- name: update FuzzyOcr.cf from template
+  template:
+    src: etc/spamassassin/FuzzyOcr.cf
+    dest: /etc/spamassassin/FuzzyOcr.cf
+    owner: root
+    group: root
+    mode: 0644
   notify:
     - restart spamassassin
 
@@ -138,26 +141,16 @@
     mode: 0644
     state: file
 
-- name: update FuzzyOcr.cf from template
-  template:
-    src: etc/spamassassin/FuzzyOcr.cf
-    dest: /etc/spamassassin/FuzzyOcr.cf
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart spamassassin
-
 - name: download gpg key for Sought ruleset
   get_url:
     url: http://yerp.org/rules/GPG.KEY
-    dest: /tmp/GPG.KEY
-    force: yes
+    dest: /etc/spamassassin/sought_ruleset.key
 
 - name: import gpg key for Sought ruleset
   sudo_user: debian-spamd
-  command: sa-update --gpghomedir /var/lib/spamassassin/sa-update-keys --import /tmp/GPG.KEY
-  ignore_errors: true
+  register: gpg_import
+  command: gpg -v --homedir /var/lib/spamassassin/sa-update-keys --import /etc/spamassassin/sought_ruleset.key
+  changed_when: 'gpg_import.stderr.find("imported") != -1'
 
 - name: update /etc/cron.daily/spamassassin-sought from template
   template:
@@ -170,7 +163,18 @@
 - name: update sought rules
   sudo_user: debian-spamd
   command: sa-update --gpghomedir /var/lib/spamassassin/sa-update-keys --gpgkey 6C6191E3 --channel sought.rules.yerp.org
-  ignore_errors: true
+  register: sa_update_yerp
+  changed_when: "sa_update_yerp.rc == 0"
+  failed_when: "sa_update_yerp.rc > 1"
+  notify:
+    - restart spamassassin
+
+- name: update regular spamassassin rules
+  sudo_user: debian-spamd
+  command: sa-update --gpghomedir /var/lib/spamassassin/sa-update-keys
+  register: sa_update
+  changed_when: "sa_update.rc == 0"
+  failed_when: "sa_update.rc > 1"
   notify:
     - restart spamassassin
 
