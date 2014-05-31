@@ -4,6 +4,11 @@
     name: dovecot
     state: restarted
 
+- name: restart tomcat6
+  service:
+    name: tomcat6
+    state: restarted
+
 - name: restart postfix
   service:
     name: postfix
