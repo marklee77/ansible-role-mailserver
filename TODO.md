@@ -1,2 +1,3 @@
 - make sure dspam is using innodb?
-- verify spam-level header is displaying correctly...
+- dovecot plugins: antispam, solr, metadata
+
