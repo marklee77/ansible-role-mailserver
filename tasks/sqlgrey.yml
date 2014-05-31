@@ -1,5 +1,5 @@
 ---
-- name: ensure dependencies available through apt are installed
+- name: ensure sqlgrey packages are installed
   apt: 
     pkg: "{{ item }}" 
     state: latest 
@@ -22,7 +22,7 @@
     - "%"
     - localhost
 
-- name: copy .my.cnf file with sqlgrey password credentials
+- name: update /var/lib/sqlgrey/.my.cnf from template
   template:
     src: var/lib/sqlgrey/.my.cnf
     dest: /var/lib/sqlgrey/.my.cnf
@@ -30,7 +30,7 @@
     group: sqlgrey
     mode: 0600
 
-- name: update sqlgrey.conf from template
+- name: update /etc/sqlgrey/sqlgrey.conf from template
   template:
     src: etc/sqlgrey/sqlgrey.conf
     dest: /etc/sqlgrey/sqlgrey.conf
@@ -40,7 +40,7 @@
   notify:
     - restart sqlgrey
 
-- name: ensure /var/spool/postfix/sqlgrey directory exists
+- name: ensure /var/spool/postfix/sqlgrey exists and has correct permissions
   file:
     path: /var/spool/postfix/sqlgrey
     owner: sqlgrey
@@ -48,7 +48,7 @@
     mode: 0750
     state: directory
 
-- name: ensure postfix user is a member of sqlgrey group
+- name: ensure postfix user exists and is a member of the sqlgrey group
   user:
     name: postfix
     append: yes
@@ -57,7 +57,7 @@
   notify:
     - restart postfix
 
-- name: ensure sqlgrey service is started and enabled
+- name: ensure sqlgrey services are started and enabled
   service:
     name: "{{ item }}"
     pattern: /usr/sbin/sqlgrey

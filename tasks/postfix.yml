@@ -11,7 +11,7 @@
     - postfix-pcre
     - postfix-policyd-spf-python
 
-- name: update mailname from template
+- name: update /etc/mailname from template
   template:
     src: etc/mailname
     dest: /etc/mailname
@@ -21,7 +21,7 @@
   notify:
     - restart postfix
 
-- name: update main.cf from template
+- name: update /etc/postfix/main.cf from template
   template:
     src: etc/postfix/main.cf
     dest: /etc/postfix/main.cf
@@ -31,7 +31,7 @@
   notify:
     - restart postfix
 
-- name: update master.cf from template
+- name: update /etc/postfix/master.cf from template
   template:
     src: etc/postfix/master.cf
     dest: /etc/postfix/master.cf
@@ -41,7 +41,7 @@
   notify:
     - restart postfix
 
-- name: update aliases from template
+- name: update /etc/aliases from template
   template:
     src: etc/aliases
     dest: /etc/aliases
@@ -56,7 +56,7 @@
   notify:
     - restart postfix
 
-- name: ensure all mail services are started and enabled
+- name: ensure all postfix services are started and enabled
   service:
     name: "{{ item }}"
     state: started

@@ -1,5 +1,5 @@
 ---
-- name: ensure dependencies available through apt are installed
+- name: ensure clamav packages are installed
   apt: 
     pkg: "{{ item }}" 
     state: latest 
@@ -28,7 +28,7 @@
     mode: 0750
     state: directory
 
-- name: ensure postfix user is a member of clamav group
+- name: ensure postfix user exists and is a member of the clamav group
   user:
     name: postfix
     append: yes
@@ -37,7 +37,7 @@
   notify:
     - restart postfix
 
-- name: run freshclam to update database
+- name: run freshclam to check for database updates
   command: freshclam --no-warnings
   register: freshclam
   changed_when: freshclam.stdout.find("updated") != -1

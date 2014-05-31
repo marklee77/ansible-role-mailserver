@@ -16,7 +16,7 @@
     - dovecot-sieve
     - dovecot-solr
 
-- name: update dovecot.conf from template
+- name: update /etc/dovecote/dovecot.conf from template
   template:
     src: etc/dovecot/dovecot.conf
     dest: /etc/dovecot/dovecot.conf
@@ -26,7 +26,7 @@
   notify:
     - restart dovecot
 
-- name: ensure /etc/skel/.sieve.d exists
+- name: ensure /etc/skel/.sieve.d exists and has correct permissions
   file:
     path: /etc/skel/.sieve.d
     owner: root
@@ -42,7 +42,11 @@
     group: root
     mode: 0644
 
-# FIXME: auto-symlink to .dovecote.sieve?
+- name: ensure /etc/skel/.dovecot.sieve exists and links to .sieve.d/default.sieve
+  file:
+    path: /etc/skel/.dovecot.sieve
+    src: .sieve.d/default.sieve
+    state: link
 
 - name: ensure all dovecot services are started and enabled
   service:

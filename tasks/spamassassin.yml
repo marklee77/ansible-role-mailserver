@@ -51,7 +51,7 @@
   notify:
     - restart spamassassin
 
-- name: update init.pre from template
+- name: update /etc/spamassassin/init.pre from template
   template:
     src: etc/spamassassin/init.pre
     dest: /etc/spamassassin/init.pre
@@ -61,7 +61,7 @@
   notify:
     - restart spamassassin
 
-- name: update local.cf from template
+- name: update /etc/spamassassin/local.cf from template
   template:
     src: etc/spamassassin/local.cf
     dest: /etc/spamassassin/local.cf
@@ -83,7 +83,7 @@
   notify:
     - restart spamassassin
 
-- name: make sure razor home exists
+- name: ensure /var/lib/spamassassin/.razor exists and has correct permissions
   file:
     path: /var/lib/spamassassin/.razor
     owner: debian-spamd
@@ -105,7 +105,7 @@
   notify:
     - restart spamassassin
 
-- name: update FuzzyOcr.cf from template
+- name: update /etc/spamassassin/FuzzyOcr.cf from template
   template:
     src: etc/spamassassin/FuzzyOcr.cf
     dest: /etc/spamassassin/FuzzyOcr.cf
@@ -115,12 +115,12 @@
   notify:
     - restart spamassassin
 
-- name: install Mail::SpamAssassin::Plugin::dspam from github
+- name: download Mail::SpamAssassin::Plugin::dspam from github (not included in Ubuntu)
   get_url:
     url: https://raw.githubusercontent.com/elubow/dspam-spamassassin/master/dspam.pm
     dest: /usr/share/perl5/Mail/SpamAssassin/Plugin/
 
-- name: make sure plugin has correct permissions
+- name: ensure /usr/share/perl5/Mail/SpamAssassin/Plugin/dspam.pm has correct permissions
   file:
     path: /usr/share/perl5/Mail/SpamAssassin/Plugin/dspam.pm
     owner: root
@@ -128,12 +128,12 @@
     mode: 0644
     state: file
 
-- name: install configuration file for SpamAssassin dspam plugin
+- name: download configuration file for SpamAssassin dspam plugin
   get_url:
     url: https://raw.githubusercontent.com/elubow/dspam-spamassassin/master/dspam.cf
     dest: /etc/spamassassin/
 
-- name: make sure dspam.cf configuration file has correct permissions
+- name: ensure /etc/spamassassin/dspam.cf has correct permissions
   file:
     path: /etc/spamassassin/dspam.cf
     owner: root

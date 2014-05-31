@@ -1,5 +1,5 @@
 ---
-- name: ensure dependencies available through apt are installed
+- name: ensure opendkim packages are installed
   apt: 
     pkg: "{{ item }}" 
     state: latest 
@@ -9,7 +9,7 @@
     - opendkim
     - opendkim-tools
 
-- name: update opendkim.conf from template
+- name: update /etc/opendkim.conf from template
   template:
     src: etc/opendkim.conf
     dest: /etc/opendkim.conf
@@ -19,7 +19,7 @@
   notify:
     - restart opendkim
 
-- name: ensure /etc/opendkim directory exists
+- name: ensure /etc/opendkim exists and has correct permissions
   file:
     path: /etc/opendkim
     owner: opendkim
@@ -27,7 +27,7 @@
     mode: 0755
     state: directory
 
-- name: update opendkim/KeyTable from template
+- name: update /etc/opendkim/KeyTable from template
   template:
     src: etc/opendkim/KeyTable
     dest: /etc/opendkim/KeyTable
@@ -37,7 +37,7 @@
   notify:
     - restart opendkim
 
-- name: update opendkim/SigningTable from template
+- name: update /etc/opendkim/SigningTable from template
   template:
     src: etc/opendkim/SigningTable
     dest: /etc/opendkim/SigningTable
@@ -47,7 +47,7 @@
   notify:
     - restart opendkim
 
-- name: update opendkim/TrustedHosts from template
+- name: update /etc/opendkim/TrustedHosts from template
   template:
     src: etc/opendkim/TrustedHosts
     dest: /etc/opendkim/TrustedHosts
@@ -63,7 +63,7 @@
   notify:
     - restart opendkim
 
-- name: ensure domain key has correct permissions
+- name: ensure /etc/opendkim/mail.private has correct permissions
   file:
     path: /etc/opendkim/mail.private
     owner: opendkim
@@ -71,7 +71,7 @@
     mode: 0600
     state: file
 
-- name: ensure /var/spool/postfix/opendkim exists
+- name: ensure /var/spool/postfix/opendkim exists and has correct permissions
   file:
     path: /var/spool/postfix/opendkim
     owner: opendkim
@@ -79,7 +79,7 @@
     mode: 0750
     state: directory
 
-- name: ensure postfix user is a member of opendkim group
+- name: ensure postfix user exists and is a member of the opendkim group
   user:
     name: postfix
     append: yes
@@ -88,7 +88,7 @@
   notify:
     - restart postfix
 
-- name: ensure opendkim service is started and enabled
+- name: ensure opendkim services are started and enabled
   service:
     name: "{{ item }}"
     state: started
