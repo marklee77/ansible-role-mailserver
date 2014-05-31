@@ -12,4 +12,5 @@ galaxy_info:
   categories:
   - networking
   - system
-dependencies: []
+dependencies:
+- marklee77.mariadb

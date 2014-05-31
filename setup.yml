@@ -1,5 +1,0 @@
-- hosts: default
-  sudo: True
-  roles:
-    - mysql
-    - postfix
