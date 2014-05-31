@@ -15,7 +15,7 @@
     - dovecot-pop3d
     - dovecot-sieve
     - dovecot-solr
-    - solr-tomcat6
+    - solr-tomcat
 
 - name: update /etc/dovecote/dovecot.conf from template
   template:
