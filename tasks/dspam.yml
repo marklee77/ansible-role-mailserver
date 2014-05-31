@@ -35,19 +35,19 @@
 
 - name: create dspam mysql objects tables
   shell: >
-         perl -pe 's/MyISAM/InnoDB/;' 
-         /usr/share/doc/libdspam7-drv-mysql/sql/mysql_objects-4.1.sql |
-         mysql -u dspam -p "{{ mailserver_dspam_mysql_password }}" dspam 
-         && touch /etc/dspam/.mysql_objects
-         creates=/etc/dspam/.mysql_objects
+          perl -pe 's/MyISAM/InnoDB/;' 
+          /usr/share/doc/libdspam7-drv-mysql/sql/mysql_objects-4.1.sql |
+          mysql -u dspam -p"{{ mailserver_dspam_mysql_password }}" dspam 
+          && touch /etc/dspam/.mysql_objects
+          creates=/etc/dspam/.mysql_objects
 
 - name: create dspam mysql virtual users tables
   shell: >
-         perl -pe 's/MyISAM/InnoDB/;' 
-         /usr/share/doc/libdspam7-drv-mysql/sql/virtual_users.sql |
-         mysql -u dspam -p "{{ mailserver_dspam_mysql_password }}" dspam
-         && touch /etc/dspam/.mysql_virtual_users
-         creates=/etc/dspam/.mysql_virtual_users
+          perl -pe 's/MyISAM/InnoDB/;' 
+          /usr/share/doc/libdspam7-drv-mysql/sql/virtual_users.sql |
+          mysql -u dspam -p"{{ mailserver_dspam_mysql_password }}" dspam
+          && touch /etc/dspam/.mysql_virtual_users
+          creates=/etc/dspam/.mysql_virtual_users
 
 - name: update /etc/default/dspam from template
   template:
