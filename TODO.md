@@ -1,3 +1,3 @@
-- make sure dspam is using innodb?
-- dovecot plugins: antispam, solr, metadata
-
+- dspam training...
+- system sieve?
+- create default mailboxes in /etc/skel?
