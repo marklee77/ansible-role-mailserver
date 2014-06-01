@@ -65,7 +65,7 @@
     dest: /etc/dspam/dspam.conf
     owner: dspam
     group: dspam
-    mode: 0600
+    mode: 0640
   notify:
     - restart dspam
 
