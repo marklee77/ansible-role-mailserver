@@ -20,4 +20,4 @@ mailserver_rbl_list:
 mailserver_rhsbl_list:
   - rhsbl.sorbs.net
 mailserver_aliases: {}
-mailserver_mail_location: maildir:~/Maildir
+mailserver_maildir_name: Maildir
