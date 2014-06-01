@@ -1,3 +1,9 @@
 - dspam training...
 - system sieve?
-- create default mailboxes in /etc/skel?
+- postscreen empty address DNSBL error...
+- dovecot plugins
+    - expire
+    - fts
+    - lazy_expunge?
+    - mail filter plugin
+    - virtual mailboxes...
