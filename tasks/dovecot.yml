@@ -15,7 +15,6 @@
     - dovecot-pop3d
     - dovecot-sieve
     - dovecot-solr
-    - solr-tomcat
 
 - name: update /etc/dovecote/dovecot.conf from template
   template:
@@ -49,32 +48,6 @@
     src: .sieve.d/default.sieve
     state: link
 
-- name: update /etc/tomcat6/server.xml from template
-  template:
-    src: etc/tomcat6/server.xml
-    dest: /etc/tomcat6/server.xml
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart tomcat6
-
-- name: update /etc/solr/conf/solrconfig.xml from template
-  template:
-    src: etc/solr/conf/solrconfig.xml
-    dest: /etc/solr/conf/solrconfig.xml
-    owner: root
-    group: root
-    mode: 0644
-
-- name: update /etc/solr/conf/schema.xml from template
-  template:
-    src: etc/solr/conf/schema.xml
-    dest: /etc/solr/conf/schema.xml
-    owner: root
-    group: root
-    mode: 0644
-
 - name: ensure all dovecot services are started and enabled
   service:
     name: "{{ item }}"
@@ -82,4 +55,3 @@
     enabled: yes
   with_items:
     - dovecot
-    - tomcat6
