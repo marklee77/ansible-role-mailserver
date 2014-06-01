@@ -8,6 +8,7 @@ webmaster: root
 www: root
 ftp: root
 abuse: root
+clamav: root
 {% for key, value in mailserver_aliases.iteritems() -%}
 {{ key }}: {{ value }}
 {% endfor -%}
