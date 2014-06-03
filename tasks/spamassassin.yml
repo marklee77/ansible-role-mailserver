@@ -40,6 +40,19 @@
     - spamassassin-rules-ja
     - tesseract-ocr
 
+- name: ensure debian-spamd group exists
+  group:
+    name: debian-spamd
+    state: present
+
+- name: ensure debian-spamd user exists
+  user:
+    name: debian-spamd
+    group: debian-spamd
+    home: /var/lib/spamassassin
+    shell: /bin/sh
+    state: present
+
 - name: update /etc/default/spamassassin from template
   template:
     src: etc/default/spamassassin
