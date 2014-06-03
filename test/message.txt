@@ -1,5 +1,0 @@
-From: vagrant@localdomain
-Subject: Testing testing
-
-blah
-

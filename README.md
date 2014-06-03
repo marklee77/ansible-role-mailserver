@@ -1,52 +1,55 @@
-Role Name
-========
+marklee77.mailserver
+====================
 
-A brief description of the role goes here.
+Mail server with smtp/imap/pop, SSL logins, spam and virus filtering
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should
-be mentioned here. For instance, if the role uses the EC2 module, it may be
-a good idea to mention in this section that the boto package is required.
-
-set spf
-set dkim
-register with dnswl.org
-
-solr for search? seems involved...
-
-certificate based authentication for imap? cool
-
-dnssec / dane?
-
-
+Requires access to a mysql database.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- mailserver_sqlgrey_mysql_password: mysql password for sqlgrey user. Set to a 
+    random value by default.
+- mailserver_dspam_mysql_password: mysql password for dspam user. Set to a 
+    random value by default.
+- mailserver_dspam_secret: shared secret for dspam server and client. Set to a 
+    random value by default.
 
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+- mailserver_domain: Default mailserver domain. Set to "localdomain" by default.
+- mailserver_fqdn: Mailserver fully qualified domain name. Set to 
+    "localhost.localdomain" by default
+- mailserver_subdomain_list: List of valid email subdomains, set to www, ftp, 
+    and mail by default.
+- mailserver_proxy_interfaces: Any proxy interfaces. Set to no value by default.
+- mailserver_ssl_cert_file: SSL certificate for smtp/submission. Set to the 
+    automatically generated /etc/ssl/certs/ssl-cert-snakeoil.pem by default.
+- mailserver_ssl_key_file: SSL key for smtp/submission. Set to the automatically 
+    generated /etc/ssl/private/ssl-cert-snakeoil.key by default.
+- mailserver_rbl_list: Realtime blackhole list. Set to zen.spamhaus.org, 
+    psbl.surriel.com, and dnsbl.sorbs.net by default.
+- mailserver_rhsbl_list: Right hand side blackhole list. Set to rhsbl.sorbs.net 
+    by default.
+mailserver_aliases: Mailserver aliases to add to system list. Set to no values 
+    by default.
+mailserver_maildir_name: Name of maildir directory. Set to "Maildir" by default.
 
 Example Playbook
 -------------------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
+    - hosts: all
+      sudo: True
       roles:
-         - { role: username.rolename, x: 42 }
+        - marklee77.mailserver
 
 License
 -------
 
-BSD
+GPLv2
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+http://marklee77.github.io/

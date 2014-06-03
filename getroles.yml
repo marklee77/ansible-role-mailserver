@@ -1,0 +1,14 @@
+---
+- hosts: all
+  sudo: False
+  tasks:
+
+    - name: check out roles needed for testing from github.com
+      delegate_to: localhost
+      connection: local
+      git:
+        repo: 'https://github.com/marklee77/ansible-role-{{ item }}'
+        dest: roles/marklee77.{{ item }}
+        update: yes
+      with_items:
+        - mariadb
