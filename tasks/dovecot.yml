@@ -71,6 +71,7 @@
   file:
     path: /etc/skel/.dovecot.sieve
     src: .sieve.d/default.sieve
+    force: yes
     state: link
 
 - name: ensure all dovecot services are started and enabled
