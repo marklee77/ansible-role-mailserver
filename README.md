@@ -1,7 +1,9 @@
 marklee77.mailserver
 ====================
 
-Mail server with smtp/imap/pop, SSL logins, spam and virus filtering
+[![Build Status](https://travis-ci.org/marklee77/ansible-role-mailserver.svg?branch=master)](https://travis-ci.org/marklee77/ansible-role-mailserver)
+
+Mail server with smtp/imap/pop, SSL logins, spam and virus filtering.
 
 Requirements
 ------------
