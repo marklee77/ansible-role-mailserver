@@ -37,10 +37,10 @@
   notify:
     - restart postfix
 
-- name: run freshclam to check for database updates
-  command: freshclam --no-warnings
-  register: freshclam
-  changed_when: freshclam.stdout.find("updated") != -1
+#- name: run freshclam to check for database updates
+#  command: freshclam --no-warnings
+#  register: freshclam
+#  changed_when: freshclam.stdout.find("updated") != -1
 
 - name: ensure clamav services are started and enabled
   service:
