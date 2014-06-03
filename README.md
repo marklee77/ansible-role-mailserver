@@ -8,7 +8,8 @@ Mail server with smtp/imap/pop, SSL logins, spam and virus filtering.
 Requirements
 ------------
 
-Requires access to a mysql database.
+Requires access to a mysql database. The solr search plugin requires that 
+tomcat6 be installed.
 
 Role Variables
 --------------

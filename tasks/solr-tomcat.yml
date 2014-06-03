@@ -1,5 +1,5 @@
 ---
-- name: ensure solr and tomcat packages are installed
+- name: ensure solr tomcat packages are installed
   apt: 
     pkg: "{{ item }}" 
     state: latest 
@@ -7,16 +7,6 @@
     cache_valid_time: 600
   with_items:
     - solr-tomcat
-
-- name: update /etc/tomcat6/server.xml from template
-  template:
-    src: etc/tomcat6/server.xml
-    dest: /etc/tomcat6/server.xml
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart tomcat6
 
 - name: update /etc/solr/conf/solrconfig.xml from template
   template:
@@ -34,10 +24,3 @@
     group: root
     mode: 0644
 
-- name: ensure all solr and tomcat services are started and enabled
-  service:
-    name: "{{ item }}"
-    state: started
-    enabled: yes
-  with_items:
-    - tomcat6
