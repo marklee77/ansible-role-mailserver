@@ -1,5 +1,5 @@
 ---
-- include: solr-tomcat.yml
+#- include: solr-tomcat.yml
 - include: dovecot.yml
 - include: postfix.yml
 - include: sqlgrey.yml
