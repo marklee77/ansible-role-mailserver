@@ -9,8 +9,8 @@ before_install:
     - sudo apt-get -y autoremove
     - sudo apt-get -y clean
 
-    # Remove MySQL.
-    - sudo apt-get -y purge 'mysql*'
+    # Remove MySQL and Java
+    - sudo apt-get -y purge '.*mysql.*' '.*jdk.*' '.*jre.*' '.*java.*'
     - sudo apt-get -y autoremove
     - sudo apt-get -y autoclean
     - sudo rm -rf /var/lib/mysql
