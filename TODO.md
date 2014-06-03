@@ -8,3 +8,4 @@
     - lazy_expunge?
     - mail filter plugin
     - virtual mailboxes...
+    - verify solr search...also, can this be in its own role?
