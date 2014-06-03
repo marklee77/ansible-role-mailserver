@@ -34,7 +34,6 @@
     - pyzor
     - razor
     - re2c
-    - sa-compile
     - spamass-milter
     - spamassassin
     - spamassassin-heatu
