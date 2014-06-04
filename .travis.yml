@@ -34,8 +34,6 @@ script:
     # Run the role/playbook with ansible-playbook.
     - ansible-playbook -i travis/inventory site.yml
 
-    - ls -Falh /var/lib/spamassassin
-
     # Idempotence Test
     - >
       ansible-playbook -i travis/inventory site.yml
@@ -44,3 +42,8 @@ script:
       || (echo 'Idempotence test: fail' && exit 1)
 
     # FIXME: send some mail and confirm delivery
+    
+    - ls -Falh /var/lib/spamassassin
+    - ls -Falh /etc/spamassassin
+    - cat /etc/passwd
+
