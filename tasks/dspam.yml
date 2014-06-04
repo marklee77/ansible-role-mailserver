@@ -104,7 +104,7 @@
   notify:
     - restart dspam
 
-- name: ensure /var/sool/postfix/dspam exists and has correct permissions
+- name: ensure /var/spool/postfix/dspam exists and has correct permissions
   file:
     path: /var/spool/postfix/dspam
     owner: postfix

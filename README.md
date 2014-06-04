@@ -1,9 +1,9 @@
 marklee77.mailserver
 ====================
 
-[![Build Status](https://travis-ci.org/marklee77/ansible-role-mailserver.svg?branch=master)](https://travis-ci.org/marklee77/ansible-role-mailserver)
-
 Mail server with smtp/imap/pop, SSL logins, spam and virus filtering.
+
+This playbook requires Ubuntu trusy, so cannot currently be tested using travis.
 
 Requirements
 ------------

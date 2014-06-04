@@ -34,24 +34,12 @@
     - pyzor
     - razor
     - re2c
+    - sa-compile
     - spamass-milter
     - spamassassin
     - spamassassin-heatu
     - spamassassin-rules-ja
     - tesseract-ocr
-
-- name: ensure debian-spamd group exists
-  group:
-    name: debian-spamd
-    state: present
-
-- name: ensure debian-spamd user exists
-  user:
-    name: debian-spamd
-    group: debian-spamd
-    home: /var/lib/spamassassin
-    shell: /bin/sh
-    state: present
 
 - name: update /etc/default/spamassassin from template
   template:
