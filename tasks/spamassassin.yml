@@ -120,7 +120,7 @@
   get_url:
     url: https://raw.githubusercontent.com/elubow/dspam-spamassassin/master/dspam.pm
     dest: /usr/share/perl5/Mail/SpamAssassin/Plugin/
-    validate_cert: no
+    validate_certs: no
 
 - name: ensure /usr/share/perl5/Mail/SpamAssassin/Plugin/dspam.pm has correct permissions
   file:
@@ -134,7 +134,7 @@
   get_url:
     url: https://raw.githubusercontent.com/elubow/dspam-spamassassin/master/dspam.cf
     dest: /etc/spamassassin/
-    validate_cert: no
+    validate_certs: no
 
 - name: ensure /etc/spamassassin/dspam.cf has correct permissions
   file:
