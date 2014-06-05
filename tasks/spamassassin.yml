@@ -115,10 +115,12 @@
   notify:
     - restart spamassassin
 
+# FIXME: seems to be an issue with github CDN certificates?
 - name: download Mail::SpamAssassin::Plugin::dspam from github (not included in Ubuntu)
   get_url:
     url: https://raw.githubusercontent.com/elubow/dspam-spamassassin/master/dspam.pm
     dest: /usr/share/perl5/Mail/SpamAssassin/Plugin/
+    validate_cert: no
 
 - name: ensure /usr/share/perl5/Mail/SpamAssassin/Plugin/dspam.pm has correct permissions
   file:
