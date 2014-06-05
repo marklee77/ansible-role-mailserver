@@ -134,6 +134,7 @@
   get_url:
     url: https://raw.githubusercontent.com/elubow/dspam-spamassassin/master/dspam.cf
     dest: /etc/spamassassin/
+    validate_cert: no
 
 - name: ensure /etc/spamassassin/dspam.cf has correct permissions
   file:
