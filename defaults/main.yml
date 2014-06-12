@@ -1,7 +1,8 @@
 ---
-mailserver_sqlgrey_mysql_password: "{{ lookup('password', inventory_dir + '/private/credentials/sqlgrey-mysql-password') }}"
-mailserver_dspam_mysql_password: "{{ lookup('password', inventory_dir + '/private/credentials/dspam-mysql-password') }}"
-mailserver_dspam_secret: "{{ lookup('password', inventory_dir + '/private/credentials/dspam-secret') }}"
+mailserver_run_dir: "{{ lookup('env', 'PWD') }}"
+mailserver_sqlgrey_mysql_password: "{{ lookup('password', mailserver_run_dir + '/private/credentials/sqlgrey-mysql-password') }}"
+mailserver_dspam_mysql_password: "{{ lookup('password', mailserver_run_dir + '/private/credentials/dspam-mysql-password') }}"
+mailserver_dspam_secret: "{{ lookup('password', mailserver_run_dir + '/private/credentials/dspam-secret') }}"
 
 mailserver_domain: localdomain
 mailserver_fqdn: localhost.localdomain
