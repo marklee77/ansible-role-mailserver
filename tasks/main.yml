@@ -1,6 +1,6 @@
 ---
 - include: dovecot.yml
-- include: solr-tomcat.yml
+#- include: solr-tomcat.yml
 - include: postfix.yml
 - include: sqlgrey.yml
 - include: opendkim.yml

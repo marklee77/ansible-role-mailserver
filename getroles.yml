@@ -13,4 +13,3 @@
         update: yes
       with_items:
         - mariadb
-        - tomcat6
