@@ -49,15 +49,12 @@
           && touch /etc/dspam/.mysql_virtual_users
           creates=/etc/dspam/.mysql_virtual_users
 
-- name: update /etc/default/dspam from template
-  template:
-    src: etc/default/dspam
+- name: ensure START=yes in /etc/default/dspam
+  lineinfile:
     dest: /etc/default/dspam
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - restart dspam
+    regexp: ^START=
+    line: START=yes
+    state: present
 
 - name: update /etc/dspam/dspam.conf from template
   template:

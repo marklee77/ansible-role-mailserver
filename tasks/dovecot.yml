@@ -11,11 +11,8 @@
     - dovecot-imapd
     - dovecot-lmtpd
     - dovecot-managesieved
-    - dovecot-metadata-plugin
     - dovecot-pop3d
     - dovecot-sieve
-
-#    - dovecot-solr
 
 - name: update /etc/dovecote/dovecot.conf from template
   template:

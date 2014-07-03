@@ -12,9 +12,9 @@
     - postfix-policyd-spf-python
 
 - name: update /etc/mailname from template
-  template:
-    src: etc/mailname
+  copy:
     dest: /etc/mailname
+    content: "{{ mailserver_fqdn }}\n"
     owner: root
     group: root
     mode: 0644

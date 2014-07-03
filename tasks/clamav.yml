@@ -50,4 +50,4 @@
     enabled: yes
   with_items:
     - { name: clamav-daemon, pattern: /usr/sbin/clamd }
-    - { name: clamav-milter, pattern: /usr/sbin/clamav-milter}
+    - { name: clamav-milter, pattern: /usr/sbin/clamav-milter }

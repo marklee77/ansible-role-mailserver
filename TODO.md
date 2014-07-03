@@ -9,3 +9,4 @@
     - mail filter plugin
     - virtual mailboxes...
     - verify solr search...also, can this be in its own role?
+    - virtuals: http://www.greglincoln.com/geekery/2013/06/05/dovecot-virtuals-are-spiffy.html
