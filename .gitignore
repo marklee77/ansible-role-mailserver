@@ -1,3 +1,4 @@
 .vagrant
+private
 roles/*
 !roles/marklee77.mailserver
