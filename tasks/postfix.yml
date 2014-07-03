@@ -41,13 +41,13 @@
   notify:
     - restart postfix
 
-- name: update /etc/aliases from template
-  template:
-    src: etc/aliases
+- name: add aliases to /etc/aliases
+  lineinfile:
     dest: /etc/aliases
-    owner: root
-    group: root
-    mode: 0644
+    line: "{{ item.key }}: {{ item.value }}"
+    insertafter: EOF
+    state: present
+  with_dict: mailserver_aliases
   register: update_aliases
 
 - name: rehash aliases
