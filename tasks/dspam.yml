@@ -41,13 +41,13 @@
           && touch /etc/dspam/.mysql_objects
           creates=/etc/dspam/.mysql_objects
 
-- name: create dspam mysql virtual user aliases table
+- name: create dspam mysql virtual users table
   shell: >
           perl -pe 's/MyISAM/InnoDB/;' 
-          /usr/share/doc/libdspam7-drv-mysql/sql/virtual_user_aliases.sql |
+          /usr/share/doc/libdspam7-drv-mysql/sql/virtual_users.sql |
           mysql -u dspam -p"{{ mailserver_dspam_mysql_password }}" dspam
-          && touch /etc/dspam/.mysql_virtual_user_aliases
-          creates=/etc/dspam/.mysql_virtual_user_aliases
+          && touch /etc/dspam/.mysql_virtual_users
+          creates=/etc/dspam/.mysql_virtual_users
 
 - name: ensure START=yes in /etc/default/dspam
   lineinfile:
