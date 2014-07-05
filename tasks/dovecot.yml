@@ -29,25 +29,16 @@
            chdir=/etc/skel
            creates=/etc/skel/{{ mailserver_maildir_name }}
 
-- name: create sent maildir in /etc/skel
-  command: maildirmake.dovecot .Sent
+- name: create maildir subfolders
+  command: maildirmake.dovecot .{{ item }}
            chdir=/etc/skel/{{ mailserver_maildir_name }}
-           creates=/etc/skel/{{ mailserver_maildir_name }}/.Sent
-
-- name: create drafts maildir in /etc/skel
-  command: maildirmake.dovecot .Drafts
-           chdir=/etc/skel/{{ mailserver_maildir_name }}
-           creates=/etc/skel/{{ mailserver_maildir_name }}/.Drafts
-
-- name: create trash maildir in /etc/skel
-  command: maildirmake.dovecot .Trash
-           chdir=/etc/skel/{{ mailserver_maildir_name }}
-           creates=/etc/skel/{{ mailserver_maildir_name }}/.Trash
-
-- name: create spam maildir in /etc/skel
-  command: maildirmake.dovecot .Spam
-           chdir=/etc/skel/{{ mailserver_maildir_name }}
-           creates=/etc/skel/{{ mailserver_maildir_name }}/.Spam
+           creates=/etc/skel/{{ mailserver_maildir_name }}/.{{ item }}
+  with_items:
+    - Archive
+    - Drafts
+    - Sent
+    - Spam
+    - Trash
 
 - name: ensure /etc/skel/.sieve.d exists and has correct permissions
   file:
