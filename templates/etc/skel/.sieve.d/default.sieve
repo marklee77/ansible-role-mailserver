@@ -1,7 +1,7 @@
-require ["fileinto", "envelope"];
-if header :contains "x-spam-flag" ["yes"] {
-  fileinto "Spam";
-  stop;
-} else {
-  keep;
+require ["fileinto"];
+
+# rule:[spam]
+if anyof (header :is "X-Spam-Flag" "yes")
+{
+        fileinto "Spam";
 }
