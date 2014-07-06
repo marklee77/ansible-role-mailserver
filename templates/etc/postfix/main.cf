@@ -94,10 +94,7 @@ strict_rfc821_envelopes = yes
 postscreen_greet_action = enforce
 postscreen_dnsbl_action = enforce
 postscreen_access_list = permit_mynetworks
-postscreen_dnsbl_sites = 
-    {% for rbl in mailserver_rbl_list -%}
-    {{ rbl }},
-    {% endfor -%}
+postscreen_dnsbl_sites = {{ rbl|join(', ') }}
 
 policy-spf_time_limit = 3600s
 
