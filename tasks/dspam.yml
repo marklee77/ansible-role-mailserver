@@ -118,3 +118,11 @@
     - dspam
     - dspam-milter
 
+- name: update /etc/cron.weekly/dspam from template
+  template:
+    src: etc/cron.weekly/dspam
+    dest: /etc/cron.weekly/dspam
+    owner: root
+    group: root
+    mode: 0600
+

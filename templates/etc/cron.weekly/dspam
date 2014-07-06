@@ -1,0 +1,3 @@
+#!/bin/sh
+echo “Purging the Dspam database”
+mysql -u dspam -p"{{ mailserver_dspam_mysql_password }}" dspam < /usr/share/doc/libdspam7-drv-mysql/sql/purge-4.1.sql
