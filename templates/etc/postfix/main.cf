@@ -4,6 +4,10 @@ biff = no
 
 # INTERNET HOST AND DOMAIN NAMES
 
+{% if mailserver_relay_host %}
+relayhost = {{ mailserver_relay_host }}
+{% endif %}
+
 myhostname = {{ mailserver_fqdn }}
 mydomain = {{ mailserver_domain }}
 myorigin = $mydomain
