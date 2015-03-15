@@ -4,7 +4,7 @@ biff = no
 
 # INTERNET HOST AND DOMAIN NAMES
 
-{% if mailserver_relay_host %}
+{% if mailserver_relay_host is defined %}
 relayhost = {{ mailserver_relay_host }}
 {% endif %}
 
