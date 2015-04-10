@@ -56,3 +56,21 @@ Author Information
 ------------------
 
 http://stillwell.me
+
+Todo
+----
+
+- everything in docker, need following containers:
+    - mariadb/mysql and/or postgres
+    - dovecot
+    - postfix
+    - opendkim
+    - sqlgrey
+    - dspam
+    - spamassassin
+    - clamav
+    - tomcat/solr?
+    - ldap?
+- configuration changes for docker:
+    - prefer internet ports over sockets
+    - virtual users in mariadb or ldap instead of real users
