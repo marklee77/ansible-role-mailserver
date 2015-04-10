@@ -76,3 +76,5 @@ Todo
     - virtual users in mariadb or ldap instead of real users
     - make smtpd_milters, non_smtpd_milters set at runtime based on environment 
       variables
+- review guides:
+    - https://www.digitalocean.com/community/tutorials/how-to-configure-a-mail-server-using-postfix-dovecot-mysql-and-spamassasin
