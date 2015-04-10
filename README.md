@@ -74,3 +74,5 @@ Todo
 - configuration changes for docker:
     - prefer internet ports over sockets
     - virtual users in mariadb or ldap instead of real users
+    - make smtpd_milters, non_smtpd_milters set at runtime based on environment 
+      variables
