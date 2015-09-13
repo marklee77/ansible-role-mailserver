@@ -48,6 +48,9 @@ relay_domains = $mydestination
 
 # TLS parameters
 
+tls_ssl_options = NO_COMPRESSION
+tls_high_cipherlist = ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA
+
 smtp_use_tls = yes
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 smtp_tls_cert_file = {{ mailserver_ssl_cert_file }}
@@ -60,9 +63,10 @@ smtpd_tls_ask_ccert = yes
 smtpd_tls_auth_only = yes
 smtpd_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 smtpd_tls_cert_file = {{ mailserver_ssl_cert_file }}
-smtpd_tls_ciphers = high
 smtpd_tls_key_file = {{ mailserver_ssl_key_file }}
-smtpd_tls_protocols = !SSLv2, !SSLv3
+smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3
+smtpd_tls_mandatory_ciphers = high
+
 smtpd_tls_received_header = yes
 smtpd_tls_security_level = may
 smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
