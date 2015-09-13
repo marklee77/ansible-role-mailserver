@@ -60,6 +60,7 @@ http://stillwell.me
 Todo
 ----
 
+- update ssl security settings based on better crypto...
 - everything in docker, need following containers:
     - mariadb/mysql and/or postgres
     - dovecot
