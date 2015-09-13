@@ -61,6 +61,7 @@ Todo
 ----
 
 - update ssl security settings based on better crypto...
+- hasn't opendkim been superseded? 
 - everything in docker, need following containers:
     - mariadb/mysql and/or postgres
     - dovecot
