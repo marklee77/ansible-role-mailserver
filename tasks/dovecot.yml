@@ -14,7 +14,7 @@
     - dovecot-pop3d
     - dovecot-sieve
 
-- name: update /etc/dovecote/dovecot.conf from template
+- name: update /etc/dovecot/dovecot.conf from template
   template:
     src: etc/dovecot/dovecot.conf
     dest: /etc/dovecot/dovecot.conf
