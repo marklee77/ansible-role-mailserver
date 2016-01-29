@@ -139,3 +139,5 @@ smtpd_milters = unix:opendkim/opendkim.sock unix:clamav/clamav.sock
 non_smtpd_milters = unix:opendkim/opendkim.sock unix:dspam/dspam.sock
 
 local_destination_concurrency_limit = 5
+
+message_size_limit = 104857600
